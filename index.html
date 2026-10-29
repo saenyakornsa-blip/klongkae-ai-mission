@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klongkae AI Mission: ภารกิจกู้ชีพครูไทย (ธีมสดใส สบายตา + Firebase & รายงานผล)</title>
+  <title>การเสริมพลังการจัดการเรียนรู้เชิงรุกและคุณภาพการเรียนรู้ ด้วย AI-Prompt ครูไทย และการนิเทศเพื่อการพัฒนา</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
@@ -115,18 +115,18 @@
         
         <!-- Title & School Badge -->
         <div>
-          <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-300 text-sky-800 text-xs px-3.5 py-1 rounded-full font-semibold mb-2">
+          <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-300 text-sky-800 text-xs px-3.5 py-1 rounded-full font-semibold mb-2 shadow-2xs">
             <span>🏫</span>
-            <span>Workshop Dashboard: โรงเรียนบ้านคลองแค</span>
+            <span id="dashboard-school-badge">Workshop Dashboard: การเสริมพลังการจัดการเรียนรู้เชิงรุก</span>
           </div>
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-800">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-600 to-amber-500">
-              ภารกิจกู้ชีพครูไทย
+          <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 leading-snug">
+            การเสริมพลังการจัดการเรียนรู้เชิงรุกและคุณภาพการเรียนรู้
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-600 to-amber-600 text-lg sm:text-2xl md:text-3xl font-extrabold mt-1">
+              ด้วย AI-Prompt ครูไทย และการนิเทศเพื่อการพัฒนา
             </span>
-            <span class="text-lg sm:text-2xl font-bold text-slate-600 block sm:inline sm:ml-1">(Klongkae 10 Missions)</span>
           </h1>
-          <p class="text-slate-600 text-xs sm:text-sm mt-1">
-            เลือกการ์ดสถานการณ์จริงที่ตรงกับใจ พิชิตมินิเกมวางแผน แล้วใช้อาวุธ <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-semibold border border-amber-300">AI-Prompt ครูไทย</span> พิชิตปัญหา!
+          <p class="text-slate-600 text-xs sm:text-sm mt-1.5">
+            ภารกิจกู้ชีพครูไทย (10 Missions) • เลือกการ์ดสถานการณ์จริงที่ตรงกับใจ พิชิตมินิเกมวางแผน แล้วใช้อาวุธ <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-semibold border border-amber-300">AI-Prompt ครูไทย</span> พิชิตปัญหา!
           </p>
         </div>
 
@@ -264,7 +264,7 @@
           <span class="bg-sky-100 text-sky-800 border border-sky-300 text-xs px-3 py-1 rounded-full font-bold">
             📊 ระบบที่ 1: เก็บสถิติแบบเรียลไทม์ (Firebase & Cloud Sync)
           </span>
-          <h2 class="text-xl font-bold text-slate-800 mt-1">แดชบอร์ดสถิติการพิชิตภารกิจ โรงเรียนบ้านคลองแค</h2>
+          <h2 class="text-xl font-bold text-slate-800 mt-1">แดชบอร์ดสถิติการพิชิตภารกิจ การจัดการเรียนรู้เชิงรุก (10 Missions)</h2>
           <p class="text-xs sm:text-sm text-slate-600">
             ประมวลผลข้อมูลจากบัญชี Gmail ของครูที่เข้าร่วมอบรม แยกตามรายภารกิจและช่วงเวลา
           </p>
@@ -399,11 +399,11 @@
       <div class="border-b-2 border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <p class="text-xs font-bold text-sky-700 uppercase tracking-wider">เอกสารสรุปผลการปฏิบัติงาน (Official Workshop & SAR Report)</p>
-          <h3 id="report-doc-title" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">
-            รายงานผลการพิชิตภารกิจกู้ชีพครูไทยด้วย AI (Klongkae 10 Missions)
+          <h3 id="report-doc-title" class="text-lg sm:text-2xl font-extrabold text-slate-900 mt-0.5">
+            รายงานผลการเสริมพลังการจัดการเรียนรู้เชิงรุกและคุณภาพการเรียนรู้ ด้วย AI-Prompt ครูไทย และการนิเทศเพื่อการพัฒนา
           </h3>
           <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
-            หน่วยงาน: <strong>โรงเรียนบ้านคลองแค</strong> • อำเภอด่านขุนทด จังหวัดนครราชสีมา
+            หน่วยงาน / สถานศึกษา: <strong id="report-school-name">สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม</strong>
           </p>
         </div>
         <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-700 shrink-0">
@@ -485,7 +485,7 @@
           <span class="bg-teal-100 text-teal-800 border border-teal-300 text-xs px-3 py-1 rounded-full font-bold">
             🎮 โหมดมินิเกมฝึกสมองครูไทย
           </span>
-          <h2 class="text-xl font-bold text-slate-800 mt-1">กู้วิกฤตโรงเรียนบ้านคลองแค (AI Prompt Catcher)</h2>
+          <h2 class="text-xl font-bold text-slate-800 mt-1">มินิเกมกู้วิกฤตห้องเรียน (AI Prompt Catcher)</h2>
           <p class="text-xs sm:text-sm text-slate-600">
             เลื่อนตะกร้าครูไทย (ปุ่มลูกศร ⬅️ ➡️ หรือแตะลากบนหน้าจอ) เพื่อรับ <strong>ไอเทม AI-Prompt สีเขียว/ฟ้า</strong> และหลบ <strong>ระเบิดงานเอกสารด่วน!</strong>
           </p>
@@ -708,6 +708,8 @@
 
       <form id="form-edit-profile" class="space-y-4">
         <input type="hidden" id="profile-target-uid" value="">
+        
+        <!-- 1. Full Name -->
         <div>
           <label for="profile-name-input" class="block text-xs font-bold text-slate-700 mb-1">
             ชื่อ-นามสกุล (สำหรับพิมพ์ในใบรายงานผลราชการ)
@@ -715,41 +717,140 @@
           <input id="profile-name-input" type="text" required placeholder="เช่น นายสมศักดิ์ สุขใจ" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
         </div>
 
+        <!-- 2. Grade Checkboxes (Multi-select) -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold text-slate-700">
+              ระดับชั้นที่รับผิดชอบสอน (เลือกได้หลายชั้น):
+            </label>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="selectAllGradesPrimary()" class="text-[10px] bg-sky-50 hover:bg-sky-100 text-sky-700 px-2 py-0.5 rounded border border-sky-200 transition">ป.1-6</button>
+              <button type="button" onclick="clearAllGradeCheckboxes()" class="text-[10px] bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 px-2 py-0.5 rounded border border-slate-200 transition">ล้าง</button>
+            </div>
+          </div>
+          
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2.5">
+            <div>
+              <span class="text-[10px] font-bold text-amber-800 uppercase block mb-1">🐣 ปฐมวัย:</span>
+              <div class="grid grid-cols-3 gap-1.5">
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="อ.1" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">อ.1</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="อ.2" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">อ.2</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="อ.3" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">อ.3</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-bold text-sky-800 uppercase block mb-1">🎒 ประถมศึกษา (เลือกคละชั้นได้):</span>
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ป.1" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ป.1</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ป.2" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ป.2</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ป.3" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ป.3</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ป.4" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ป.4</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ป.5" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ป.5</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ป.6" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ป.6</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-bold text-teal-800 uppercase block mb-1">🏫 มัธยมศึกษา (ขยายโอกาส/มัธยม):</span>
+              <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ม.1" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ม.1</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ม.2" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ม.2</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ม.3" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ม.3</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:border-sky-300 px-2.5 py-1.5 rounded-xl cursor-pointer transition select-none">
+                  <input type="checkbox" name="profile-grade" value="ม.4-6" class="rounded text-sky-600 focus:ring-sky-400">
+                  <span class="font-medium text-slate-700">ม.ปลาย</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="pt-1.5 border-t border-slate-200/80">
+              <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+                <input type="checkbox" id="profile-grade-all" name="profile-grade-all" class="rounded text-sky-600 focus:ring-sky-400" onchange="toggleGradeAll(this)">
+                <span class="text-slate-700 font-semibold">ไม่ได้ประจำชั้นเฉพาะ / ทุกระดับชั้น / ผู้บริหาร / ศึกษานิเทศก์</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Role / Subject -->
         <div>
           <label for="profile-role-input" class="block text-xs font-bold text-slate-700 mb-1">
-            ระดับชั้น / กลุ่มสาระ / ตำแหน่ง
+            กลุ่มสาระการเรียนรู้ / ตำแหน่ง / บทบาทหน้าที่
           </label>
-          <input id="profile-role-input" type="text" required list="role-suggestions" placeholder="พิมพ์ตำแหน่งหรือเลือกตัวเลือกด่วนด้านล่าง" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
+          <input id="profile-role-input" type="text" required list="role-suggestions" placeholder="เช่น ครูกลุ่มสาระคณิตศาสตร์, หัวหน้างาน 4 ฝ่าย, ศึกษานิเทศก์" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
           
           <datalist id="role-suggestions">
-            <option value="ครูประจำชั้น ป.1 - ป.3">
-            <option value="ครูประจำชั้น ป.4 - ป.6">
-            <option value="ครูปฐมวัย (อนุบาล 2 - 3)">
             <option value="ครูกลุ่มสาระคณิตศาสตร์">
             <option value="ครูกลุ่มสาระภาษาไทย">
-            <option value="ครูกลุ่มสาระภาษาอังกฤษ">
+            <option value="ครูกลุ่มสาระภาษาต่างประเทศ (ภาษาอังกฤษ)">
             <option value="ครูกลุ่มสาระวิทยาศาสตร์และเทคโนโลยี">
-            <option value="ครูกลุ่มสาระสังคมศึกษาฯ">
+            <option value="ครูกลุ่มสาระสังคมศึกษา ศาสนาและวัฒนธรรม">
+            <option value="ครูปฐมวัย">
+            <option value="ครูกลุ่มสาระศิลปะ / การงานอาชีพ / สุขศึกษา">
             <option value="หัวหน้าฝ่ายบริหารงานวิชาการ">
             <option value="หัวหน้าฝ่ายบริหารงานงบประมาณ">
-            <option value="หัวหน้าฝ่ายบริหารงานบุคคล">
             <option value="หัวหน้าฝ่ายบริหารทั่วไป">
             <option value="ผู้บริหารสถานศึกษา (ผู้อำนวยการโรงเรียน)">
             <option value="ศึกษานิเทศก์ ศธจ.นครราชสีมา">
-            <option value="ศึกษานิเทศก์ สพป.นม. 5">
+            <option value="ศึกษานิเทศก์ สพป.นม. เขต 5">
           </datalist>
 
           <!-- Quick Select Chips -->
           <div class="flex flex-wrap gap-1.5 mt-2">
-            <span class="text-[11px] text-slate-500 font-semibold self-center mr-1">เลือกด่วน:</span>
-            <button type="button" onclick="setRoleInputValue('ครูประจำชั้น ป.1 - ป.3')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ป.1-ป.3</button>
-            <button type="button" onclick="setRoleInputValue('ครูประจำชั้น ป.4 - ป.6')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ป.4-ป.6</button>
-            <button type="button" onclick="setRoleInputValue('ครูปฐมวัย')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ปฐมวัย</button>
-            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระคณิตศาสตร์')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">คณิตศาสตร์</button>
-            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระภาษาอังกฤษ')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ภาษาอังกฤษ</button>
-            <button type="button" onclick="setRoleInputValue('ศึกษานิเทศก์ ศธจ.นครราชสีมา')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ศึกษานิเทศก์</button>
-            <button type="button" onclick="setRoleInputValue('ผู้บริหารสถานศึกษา (ผู้อำนวยการโรงเรียน)')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ผอ.รร.</button>
+            <span class="text-[10px] text-slate-500 font-semibold self-center mr-0.5">เลือกตำแหน่งด่วน:</span>
+            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระคณิตศาสตร์')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">คณิตศาสตร์</button>
+            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระภาษาไทย')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">ภาษาไทย</button>
+            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระภาษาอังกฤษ')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">ภาษาอังกฤษ</button>
+            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระวิทยาศาสตร์ฯ')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">วิทยาศาสตร์ฯ</button>
+            <button type="button" onclick="setRoleInputValue('ครูปฐมวัย')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">ปฐมวัย</button>
+            <button type="button" onclick="setRoleInputValue('ศึกษานิเทศก์ ศธจ.นครราชสีมา')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">ศึกษานิเทศก์</button>
+            <button type="button" onclick="setRoleInputValue('ผู้บริหารสถานศึกษา (ผู้อำนวยการโรงเรียน)')" class="text-[10px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-md border border-slate-200 transition">ผอ.รร.</button>
           </div>
+        </div>
+
+        <!-- 4. School / Organization -->
+        <div>
+          <label for="profile-school-input" class="block text-xs font-bold text-slate-700 mb-1">
+            โรงเรียน / สถานศึกษา / หน่วยงานต้นสังกัด
+          </label>
+          <input id="profile-school-input" type="text" placeholder="เช่น โรงเรียนบ้านคลองแค, ศธจ.นครราชสีมา หรือหน่วยงานของท่าน" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
         </div>
 
         <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
@@ -840,7 +941,7 @@
         bcolor: "bg-sky-100 text-sky-800 border-sky-300",
         cardBg: "hover:border-sky-400",
         quizOptions: [
-          { text: "สั่งให้ AI สร้างนิทานสั้นบริบทบ้านคลองแค พร้อมใบงานบันได 5 ขั้น (ใคร ทำอะไร ที่ไหน อย่างไร สรุป)", correct: true },
+          { text: "สั่งให้ AI สร้างนิทานสั้นบริบทชุมชนท้องถิ่น พร้อมใบงานบันได 5 ขั้น (ใคร ทำอะไร ที่ไหน อย่างไร สรุป)", correct: true },
           { text: "สั่งให้ AI สรุปบทความยาวๆ มาให้ครูแจกเด็กคัดลอกลงสมุด", correct: false }
         ]
       },
@@ -1007,6 +1108,47 @@
       }
     ];
 
+    // Teacher Role & School Formatter Functions
+    function formatTeacherRole(t) {
+      if (!t) return "ครูผู้สอน";
+      const grades = Array.isArray(t.grades) && t.grades.length > 0 ? t.grades.join(", ") : "";
+      const role = (t.role || "").trim();
+      if (grades && role) {
+        return `${grades} • ${role}`;
+      }
+      return grades || role || "ครูผู้สอน";
+    }
+
+    function formatTeacherSchool(t) {
+      if (!t || !t.school) return "สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม";
+      return t.school.trim();
+    }
+
+    window.selectAllGradesPrimary = function () {
+      const pGrades = ["ป.1", "ป.2", "ป.3", "ป.4", "ป.5", "ป.6"];
+      document.querySelectorAll('input[name="profile-grade"]').forEach(cb => {
+        if (pGrades.includes(cb.value)) cb.checked = true;
+      });
+      const allCb = document.getElementById("profile-grade-all");
+      if (allCb) allCb.checked = false;
+    };
+
+    window.clearAllGradeCheckboxes = function () {
+      document.querySelectorAll('input[name="profile-grade"]').forEach(cb => {
+        cb.checked = false;
+      });
+      const allCb = document.getElementById("profile-grade-all");
+      if (allCb) allCb.checked = false;
+    };
+
+    window.toggleGradeAll = function (el) {
+      if (el.checked) {
+        document.querySelectorAll('input[name="profile-grade"]').forEach(cb => {
+          cb.checked = false;
+        });
+      }
+    };
+
     // Admin Configuration & Role-Based Access Control
     const ADMIN_EMAIL = "saenyakorn.sa@gmail.com";
 
@@ -1147,7 +1289,9 @@
             name: state.user.name,
             email: state.user.email,
             photoURL: state.user.photoURL || "",
-            role: state.user.role || "ครูผู้สอน โรงเรียนบ้านคลองแค",
+            grades: Array.isArray(state.user.grades) ? state.user.grades : [],
+            role: state.user.role || "ครูผู้สอน",
+            school: state.user.school || "โรงเรียนบ้านคลองแค",
             completed: state.completed,
             quizSolved: state.quizSolved,
             notes: state.notes,
@@ -1176,7 +1320,9 @@
         name: currentName,
         email: currentEmail,
         photoURL: (state.user && state.user.photoURL) || "",
+        grades: (state.user && Array.isArray(state.user.grades)) ? state.user.grades : [],
         role: currentRole,
+        school: (state.user && state.user.school) || "โรงเรียนบ้านคลองแค",
         completed: { ...state.completed },
         quizSolved: { ...state.quizSolved },
         notes: { ...state.notes },
@@ -1201,8 +1347,11 @@
       const editHint = document.getElementById("btn-edit-profile-hint");
 
       if (state.user) {
-        nameEl.innerText = `${state.user.name} (${state.user.role || "ระบุตำแหน่ง"})`;
-        emailEl.innerText = `📧 ${state.user.email}`;
+        const formattedRole = formatTeacherRole(state.user);
+        nameEl.innerText = `${state.user.name} (${formattedRole})`;
+        emailEl.innerText = `📧 ${state.user.email}${state.user.school ? ` • 🏫 ${state.user.school}` : ""}`;
+        const schBadge = document.getElementById("dashboard-school-badge");
+        if (schBadge && state.user.school) schBadge.innerText = `Workshop Dashboard: ${state.user.school}`;
         loginBtnLabel.innerText = "สลับบัญชี Gmail";
         logoutBtn.classList.remove("hidden");
         if (editHint) editHint.classList.remove("hidden");
@@ -1269,7 +1418,11 @@
             const existing = state.allTeachers.find(t => t.uid === u.uid || (u.email && t.email === u.email));
             const currentRole = (state.user && state.user.role && state.user.role !== "ครูผู้สอน โรงเรียนบ้านคลองแค") 
               ? state.user.role 
-              : (existing && existing.role) || (state.user && state.user.role) || "ครูผู้สอน โรงเรียนบ้านคลองแค";
+              : (existing && existing.role) || (state.user && state.user.role) || "ครูผู้สอน";
+            const currentGrades = (state.user && Array.isArray(state.user.grades) && state.user.grades.length > 0)
+              ? state.user.grades
+              : (existing && Array.isArray(existing.grades)) ? existing.grades : [];
+            const currentSchool = (state.user && state.user.school) || (existing && existing.school) || "โรงเรียนบ้านคลองแค";
             const currentName = (state.user && state.user.name) || u.displayName || (existing && existing.name) || "คุณครู";
             const currentPhoto = u.photoURL || (state.user && state.user.photoURL) || (existing && existing.photoURL) || "";
 
@@ -1278,7 +1431,9 @@
               name: currentName,
               email: u.email || "",
               photoURL: currentPhoto,
-              role: currentRole
+              grades: currentGrades,
+              role: currentRole,
+              school: currentSchool
             };
             saveState();
             updateAuthUi();
@@ -1464,7 +1619,7 @@
       let avatar = "🌱";
       if (count >= 10) {
         level = "Lv.MAX";
-        title = "ตำนานกู้ชีพครูบ้านคลองแค";
+        title = "ตำนานกู้ชีพครูไทย ยุค AI";
         avatar = "👑";
       } else if (count >= 7) {
         level = "Lv.4";
@@ -1818,11 +1973,14 @@
                 </div>
               </td>
               <td class="py-3 px-3 text-xs">
-                <div class="inline-flex items-center gap-1 flex-wrap">
-                  <span class="inline-block bg-slate-100 text-slate-800 px-2 py-1 rounded-md border border-slate-200 font-medium">
-                    ${t.role || "ครูผู้สอน"}
-                  </span>
-                  ${editSelfBtn}
+                <div class="inline-flex flex-col gap-0.5">
+                  <div class="inline-flex items-center gap-1 flex-wrap">
+                    <span class="inline-block bg-sky-50 text-sky-900 border border-sky-200 font-medium px-2 py-0.5 rounded-md">
+                      ${formatTeacherRole(t)}
+                    </span>
+                    ${editSelfBtn}
+                  </div>
+                  ${t.school ? `<span class="text-[10px] text-slate-400 truncate max-w-[170px]">${t.school}</span>` : ""}
                 </div>
               </td>
               <td class="py-3 px-3 text-center font-semibold text-amber-800">${t.mDone}/5</td>
@@ -1924,7 +2082,9 @@
         repEmail.innerText = state.user ? state.user.email : "admin.klongkae@gmail.com";
       } else {
         docTitle.innerText = "รายงานผลการปฏิบัติงานรายบุคคล: ภารกิจกู้ชีพครูไทยด้วย AI";
-        repName.innerText = state.user ? `${state.user.name} (${state.user.role})` : "คุณครูผู้เข้าร่วมอบรม (โหมดผู้เยี่ยมชม)";
+        repName.innerText = state.user ? `${state.user.name} (${formatTeacherRole(state.user)})` : "คุณครูผู้เข้าร่วมอบรม (โหมดผู้เยี่ยมชม)";
+        const schRep = document.getElementById("report-school-name");
+        if (schRep) schRep.innerText = (state.user && state.user.school) ? state.user.school : "สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม";
         repEmail.innerText = state.user ? state.user.email : "ยังไม่ได้ระบุ Gmail (กดปุ่มล็อกอินด้านบน)";
       }
 
@@ -2002,9 +2162,9 @@
 
       const synthEl = document.getElementById("report-synthesis-text");
       if (!isSchoolMode) {
-        synthEl.innerText = `ผู้รายงานได้ประยุกต์ใช้ AI-Prompt ครูไทย ในการแก้ปัญหาหน้างานจริงตามบริบท SAR ของโรงเรียนบ้านคลองแค พิชิตภารกิจแล้วจำนวน ${totalDone} จาก 10 ภารกิจ (ช่วงเช้า ${morningDone} ข้อ, ช่วงสาย ${sharedDone} ข้อ, ช่วงบ่าย ${afternoonDone} ข้อ) สามารถนำชิ้นงานไปใช้ประกอบการนิเทศภายใน การประกันคุณภาพการศึกษา (มฐ.3 สมศ.) และจัดทำข้อตกลงในการพัฒนางาน (ว.PA) ได้อย่างเป็นรูปธรรม`;
+        const schLabel = (state.user && state.user.school) ? state.user.school : "สถานศึกษา/หน่วยงาน"; synthEl.innerText = `ผู้รายงานได้ประยุกต์ใช้ AI-Prompt ครูไทย ในการแก้ปัญหาหน้างานจริงตามบริบทของ ${schLabel} พิชิตภารกิจแล้วจำนวน ${totalDone} จาก 10 ภารกิจ (ช่วงเช้า ${morningDone} ข้อ, ช่วงสาย ${sharedDone} ข้อ, ช่วงบ่าย ${afternoonDone} ข้อ) สามารถนำชิ้นงานไปใช้ประกอบการนิเทศภายใน การประกันคุณภาพการศึกษา และจัดทำข้อตกลงในการพัฒนางาน (ว.PA) ได้อย่างเป็นรูปธรรม`;
       } else {
-        synthEl.innerText = `คณะครูโรงเรียนบ้านคลองแคจำนวน ${state.allTeachers.length} ท่าน ได้ร่วมกันขับเคลื่อนชุมชนแห่งการเรียนรู้ทางวิชาชีพ (PLC) โดยใช้เทคโนโลยี AI สร้างแผนการจัดการเรียนรู้เชิงรุก (Active Learning) สื่อสร้างสรรค์ใน Canva และระบบรายงานผลราชการครบทั้ง 3 ช่วงเวลา สอดคล้องกับมาตรฐานการประกันคุณภาพภายนอก (สมศ.) และเกณฑ์ ว.PA`;
+        const schGroupLabel = (state.user && state.user.school) ? state.user.school : "สถานศึกษา/หน่วยงาน"; synthEl.innerText = `คณะครูและบุคลากรทางการศึกษา (${schGroupLabel}) จำนวน ${state.allTeachers.length} ท่าน ได้ร่วมกันขับเคลื่อนชุมชนแห่งการเรียนรู้ทางวิชาชีพ (PLC) โดยใช้เทคโนโลยี AI สร้างแผนการจัดการเรียนรู้เชิงรุก (Active Learning) สื่อสร้างสรรค์ใน Canva และระบบรายงานผลราชการครบทั้ง 3 ช่วงเวลา สอดคล้องกับมาตรฐานการประกันคุณภาพ และเกณฑ์ ว.PA`;
       }
     }
 
@@ -2012,7 +2172,7 @@
     function exportReportCsv() {
       syncCurrentUserIntoTeachersList();
       const rows = [
-        ["รหัสผู้ใช้งาน", "ชื่อ-นามสกุล", "บัญชี Gmail", "ตำแหน่ง/ระดับชั้น", "ช่วงเช้า (5 ข้อ)", "ช่วงสาย (1 ข้อ)", "ช่วงบ่าย (4 ข้อ)", "รวมภารกิจที่พิชิต", "คะแนน XP", "เวลาอัปเดตล่าสุด"]
+        ["รหัสผู้ใช้งาน", "ชื่อ-นามสกุล", "บัญชี Gmail", "ระดับชั้นที่สอน", "กลุ่มสาระ/ตำแหน่ง", "โรงเรียน/หน่วยงาน", "ช่วงเช้า (5 ข้อ)", "ช่วงสาย (1 ข้อ)", "ช่วงบ่าย (4 ข้อ)", "รวมภารกิจที่พิชิต", "คะแนน XP", "เวลาอัปเดตล่าสุด"]
       ];
       state.allTeachers.forEach(t => {
         const comp = t.completed || {};
@@ -2023,11 +2183,14 @@
         const total = mDone + sDone + aDone;
         const qCount = Object.keys(qz).filter(k => qz[k]).length;
         const xp = total * 100 + qCount * 50 + (t.arcadeBonusXp || 0);
+        const gStr = Array.isArray(t.grades) ? t.grades.join(", ") : "";
         rows.push([
           t.uid,
           `"${(t.name || "").replace(/"/g, '""')}"`,
           t.email,
+          `"${gStr.replace(/"/g, '""')}"`,
           `"${(t.role || "").replace(/"/g, '""')}"`,
+          `"${(t.school || "").replace(/"/g, '""')}"`,
           mDone,
           sDone,
           aDone,
@@ -2104,7 +2267,7 @@
         },
         {
           icon: "👑",
-          title: "ตำนานครูไทยบ้านคลองแค",
+          title: "ตำนานครูไทยยุค AI",
           desc: "พิชิตครบทั้ง 10 ภารกิจกู้ชีพครูไทย!",
           unlocked: totalDone >= 10,
           progress: `${totalDone}/10 ภารกิจ`
@@ -2243,7 +2406,7 @@
       arcadeCtx.fillStyle = "#ffffff";
       arcadeCtx.font = "bold 13px Prompt, sans-serif";
       arcadeCtx.textAlign = "center";
-      arcadeCtx.fillText("👩‍🏫 ครูคลองแค", playerX + playerWidth / 2, basketY + 22);
+      arcadeCtx.fillText("👩‍🏫 ครูผู้กล้า", playerX + playerWidth / 2, basketY + 22);
 
       // Falling Items
       fallingItems.forEach(item => {
@@ -2415,9 +2578,27 @@
 
       document.getElementById("profile-target-uid").value = targetUser.uid;
       document.getElementById("profile-name-input").value = targetUser.name || "";
-      document.getElementById("profile-email-display") ? document.getElementById("profile-email-display").innerText = targetUser.email || "" : null;
       document.getElementById("profile-modal-email").innerText = targetUser.email || "";
       document.getElementById("profile-role-input").value = targetUser.role || "";
+      document.getElementById("profile-school-input").value = targetUser.school || "";
+
+      // Populate Grade Checkboxes
+      const userGrades = Array.isArray(targetUser.grades) ? targetUser.grades : [];
+      let gradesToCheck = [...userGrades];
+      if (gradesToCheck.length === 0 && targetUser.role) {
+        if (targetUser.role.includes("ป.1 - ป.3") || targetUser.role.includes("ป.1-ป.3")) gradesToCheck.push("ป.1", "ป.2", "ป.3");
+        else if (targetUser.role.includes("ป.4 - ป.6") || targetUser.role.includes("ป.4-ป.6")) gradesToCheck.push("ป.4", "ป.5", "ป.6");
+        else if (targetUser.role.includes("ปฐมวัย")) gradesToCheck.push("อ.2", "อ.3");
+      }
+
+      document.querySelectorAll('input[name="profile-grade"]').forEach(cb => {
+        cb.checked = gradesToCheck.includes(cb.value);
+      });
+
+      const allCb = document.getElementById("profile-grade-all");
+      if (allCb) {
+        allCb.checked = (gradesToCheck.length === 0 && (targetUser.role || "").includes("ศึกษานิเทศก์"));
+      }
 
       const avatarImg = document.getElementById("profile-modal-avatar-img");
       const avatarFallback = document.getElementById("profile-modal-avatar-fallback");
@@ -2475,19 +2656,28 @@
         const targetUid = document.getElementById("profile-target-uid").value;
         const newName = document.getElementById("profile-name-input").value.trim();
         const newRole = document.getElementById("profile-role-input").value.trim();
-        if (!newName || !newRole) return;
+        const newSchool = document.getElementById("profile-school-input").value.trim() || "โรงเรียนบ้านคลองแค";
+
+        const checkedGrades = Array.from(document.querySelectorAll('input[name="profile-grade"]:checked'))
+          .map(cb => cb.value);
+
+        if (!newName) return;
 
         const isSelf = state.user && state.user.uid === targetUid;
         if (isSelf) {
           state.user.name = newName;
+          state.user.grades = checkedGrades;
           state.user.role = newRole;
+          state.user.school = newSchool;
         }
 
         // Update in state.allTeachers
         const idx = state.allTeachers.findIndex(t => t.uid === targetUid);
         if (idx >= 0) {
           state.allTeachers[idx].name = newName;
+          state.allTeachers[idx].grades = checkedGrades;
           state.allTeachers[idx].role = newRole;
+          state.allTeachers[idx].school = newSchool;
         }
 
         // Save to Firestore if connected
@@ -2495,7 +2685,9 @@
           try {
             await firestoreDb.collection("klongkae_teachers").doc(targetUid).set({
               name: newName,
+              grades: checkedGrades,
               role: newRole,
+              school: newSchool,
               updatedAt: new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น."
             }, { merge: true });
             state.dbWrites += 1;
@@ -2512,7 +2704,7 @@
         renderReportView();
         closeProfileModal();
         playTone("success");
-        showToast("✅", "อัปเดตโพรไฟล์สำเร็จ!", `บันทึกข้อมูล "${newName}" (${newRole}) เรียบร้อยแล้ว`);
+        showToast("✅", "อัปเดตโพรไฟล์สำเร็จ!", `บันทึกข้อมูล "${newName}" เรียบร้อยแล้ว`);
       });
 
       document.getElementById("btn-open-login").addEventListener("click", () => {
@@ -2540,14 +2732,18 @@
               const gUser = result.user;
               const inputRole = document.getElementById("login-role-input").value.trim();
               const existing = state.allTeachers.find(t => t.uid === gUser.uid || t.email === gUser.email);
-              const finalRole = inputRole || (existing && existing.role) || "ครูผู้สอน โรงเรียนบ้านคลองแค";
+              const finalRole = inputRole || (existing && existing.role) || "ครูผู้สอน";
+              const finalGrades = (existing && Array.isArray(existing.grades)) ? existing.grades : [];
+              const finalSchool = (existing && existing.school) || "โรงเรียนบ้านคลองแค";
 
               state.user = {
                 uid: gUser.uid,
                 name: gUser.displayName || (existing && existing.name) || "คุณครู",
                 email: gUser.email || "",
                 photoURL: gUser.photoURL || "",
-                role: finalRole
+                grades: finalGrades,
+                role: finalRole,
+                school: finalSchool
               };
               saveState();
               updateAuthUi();
@@ -2705,7 +2901,7 @@
         const doneCards = cards.filter(c => state.completed[c.id]);
         const userLabel = state.user ? `${state.user.name} (${state.user.email})` : "ครูผู้เข้าร่วมอบรม";
         const reportStr = [
-          "📑 รายงานผลการพิชิตภารกิจกู้ชีพครูไทย (โรงเรียนบ้านคลองแค)",
+          "📑 รายงานผลการเสริมพลังการจัดการเรียนรู้เชิงรุกและคุณภาพการเรียนรู้ ด้วย AI-Prompt ครูไทย และการนิเทศเพื่อการพัฒนา",
           `ผู้รายงาน: ${userLabel}`,
           `ผลสัมฤทธิ์: พิชิตแล้ว ${doneCards.length}/10 ภารกิจ (${doneCards.length * 10}%)`,
           "รายละเอียดภารกิจที่พิชิต:",
@@ -2770,7 +2966,7 @@
       // Copy Summary & Reset Progress
       document.getElementById("btn-copy-summary").addEventListener("click", () => {
         const doneCards = cards.filter(c => state.completed[c.id]);
-        const text = `สรุปผลการพิชิตภารกิจกู้ชีพครูไทย (โรงเรียนบ้านคลองแค): พิชิตแล้ว ${doneCards.length}/10 ภารกิจ\n` +
+        const text = `สรุปผลการเสริมพลังการจัดการเรียนรู้เชิงรุกและคุณภาพการเรียนรู้ ด้วย AI-Prompt ครูไทย: พิชิตแล้ว ${doneCards.length}/10 ภารกิจ\n` +
           doneCards.map(c => `- [#${c.id}] ${c.badge}: ${c.title}`).join("\n");
         try {
           if (navigator.clipboard && navigator.clipboard.writeText) {
