@@ -344,6 +344,71 @@
           <tbody id="stats-leaderboard-tbody" class="divide-y divide-slate-200"></tbody>
         </table>
       </div>
+
+      <!-- Dedicated Mini-Game Statistics & Leaderboard -->
+      <div class="mt-6 bg-gradient-to-br from-teal-50/80 via-sky-50/80 to-indigo-50/80 border-2 border-teal-200 rounded-3xl p-5 sm:p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-teal-200">
+          <div>
+            <span class="bg-teal-200/80 text-teal-900 border border-teal-300 text-xs px-3 py-1 rounded-full font-bold">
+              🎮 แดชบอร์ดสถิติมินิเกมกู้วิกฤตห้องเรียน
+            </span>
+            <h3 class="text-lg font-extrabold text-slate-800 mt-1 flex items-center gap-2">
+              <span>ทำเนียบเซียนมินิเกม AI Prompt Catcher</span>
+              <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">ง่าย • ปานกลาง • ยาก</span>
+            </h3>
+            <p class="text-xs text-slate-600 mt-0.5">
+              อันดับคะแนนสูงสุดในการประลองความไวเก็บไอเทม AI และหลบระเบิดงานด่วนนอกแผน พร้อมบันทึกขึ้น Cloud แบบเรียลไทม์
+            </p>
+          </div>
+          <button type="button" onclick="switchTab('arcade')" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">
+            <span>🕹️ เข้าสู่ห้องเล่นมินิเกม</span>
+            <span>➔</span>
+          </button>
+        </div>
+
+        <!-- Game KPI Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-5">
+          <div class="bg-white/95 border border-teal-200 rounded-2xl p-3.5 shadow-2xs">
+            <p class="text-xs font-bold text-teal-800 flex items-center gap-1">👑 แชมป์คะแนนสูงสุด</p>
+            <p id="game-kpi-champ" class="text-base font-extrabold text-slate-800 mt-1 truncate">-</p>
+            <p id="game-kpi-champ-detail" class="text-xs text-slate-500 mt-0.5">ยังไม่มีผู้บันทึกสถิติ</p>
+          </div>
+          <div class="bg-white/95 border border-sky-200 rounded-2xl p-3.5 shadow-2xs">
+            <p class="text-xs font-bold text-sky-800 flex items-center gap-1">🕹️ สถิติสูงสุดในระบบ</p>
+            <p id="game-kpi-highscore" class="text-2xl font-extrabold text-sky-700 mt-0.5">0 แต้ม</p>
+            <p id="game-kpi-level-badge" class="text-xs text-slate-500 mt-0.5">ระดับ: -</p>
+          </div>
+          <div class="bg-white/95 border border-amber-200 rounded-2xl p-3.5 shadow-2xs">
+            <p class="text-xs font-bold text-amber-800 flex items-center gap-1">🎯 ระดับสูงสุดที่มีผู้พิชิต</p>
+            <p id="game-kpi-max-level" class="text-lg font-extrabold text-amber-700 mt-1">🟢 ระดับง่าย</p>
+            <p class="text-xs text-slate-500 mt-0.5">ปลดล็อกตามคะแนนสะสม</p>
+          </div>
+          <div class="bg-white/95 border border-indigo-200 rounded-2xl p-3.5 shadow-2xs">
+            <p class="text-xs font-bold text-indigo-800 flex items-center gap-1">🎲 จำนวนรอบการแข่งขัน</p>
+            <p id="game-kpi-total-plays" class="text-2xl font-extrabold text-indigo-700 mt-0.5">0 ครั้ง</p>
+            <p id="game-kpi-avg-plays" class="text-xs text-slate-500 mt-0.5">ร่วมสนุกสะสมโบนัส XP</p>
+          </div>
+        </div>
+
+        <!-- Game Leaderboard Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-2xs">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-teal-50 text-teal-900 border-b border-teal-200">
+                <th class="py-2.5 px-3 font-bold rounded-tl-xl text-center w-16">อันดับ</th>
+                <th class="py-2.5 px-3 font-bold">คุณครูผู้ท้าชิง / บัญชี Gmail</th>
+                <th class="py-2.5 px-3 font-bold text-center">ระดับสูงสุดที่ไปถึง</th>
+                <th class="py-2.5 px-3 font-bold text-center">จำนวนรอบที่เล่น</th>
+                <th class="py-2.5 px-3 font-bold text-center">โบนัส XP จากเกม</th>
+                <th class="py-2.5 px-3 font-bold text-right rounded-tr-xl">คะแนนสูงสุด (High Score)</th>
+              </tr>
+            </thead>
+            <tbody id="stats-game-leaderboard-tbody" class="divide-y divide-slate-200">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -478,23 +543,34 @@
   </section>
 
   <!-- VIEW 4: Interactive Mini-Game (Classroom Rescue Arcade) -->
-  <section id="view-arcade" class="max-w-6xl mx-auto hidden no-print">
+  <section id="view-arcade" class="max-w-6xl mx-auto hidden no-print space-y-6">
     <div class="glass-panel border border-teal-200 rounded-3xl p-4 sm:p-6 shadow-sm">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-200">
         <div>
-          <span class="bg-teal-100 text-teal-800 border border-teal-300 text-xs px-3 py-1 rounded-full font-bold">
-            🎮 โหมดมินิเกมฝึกสมองครูไทย
-          </span>
+          <div class="flex items-center gap-2">
+            <span class="bg-teal-100 text-teal-800 border border-teal-300 text-xs px-3 py-1 rounded-full font-bold">
+              🎮 โหมดมินิเกมฝึกสมองครูไทย
+            </span>
+            <span id="arcade-level-pill" class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs px-2.5 py-0.5 rounded-full font-bold">
+              🟢 ระดับง่าย (Easy)
+            </span>
+          </div>
           <h2 class="text-xl font-bold text-slate-800 mt-1">มินิเกมกู้วิกฤตห้องเรียน (AI Prompt Catcher)</h2>
           <p class="text-xs sm:text-sm text-slate-600">
-            เลื่อนตะกร้าครูไทย (ปุ่มลูกศร ⬅️ ➡️ หรือแตะลากบนหน้าจอ) เพื่อรับ <strong>ไอเทม AI-Prompt สีเขียว/ฟ้า</strong> และหลบ <strong>ระเบิดงานเอกสารด่วน!</strong>
+            เลื่อนตะกร้าครูไทย เพื่อรับ <strong>ไอเทม AI-Prompt</strong>, <strong>Active Learning</strong>, <strong>กาแฟเติมพลัง ☕</strong> และหลบ <strong>ระเบิดงานด่วนนอกแผน!</strong>
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <div class="bg-sky-50 border border-sky-200 px-3.5 py-2 rounded-xl text-xs font-bold text-sky-900">
-            คะแนนเกม: <span id="arcade-score" class="text-base text-sky-700">0</span>
+          <div class="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-900">
+            ระดับ: <span id="arcade-level-badge" class="font-extrabold text-emerald-700">🟢 ง่าย</span>
           </div>
-          <div class="bg-rose-50 border border-rose-200 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-900">
+          <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-xs font-bold text-sky-900">
+            คะแนนเกม: <span id="arcade-score" class="text-base text-sky-700 font-extrabold">0</span>
+          </div>
+          <div class="bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-900">
+            สถิติสูงสุด: <span id="arcade-hud-high-score" class="text-base text-indigo-700 font-extrabold">0</span>
+          </div>
+          <div class="bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-900">
             พลังใจครู: <span id="arcade-lives" class="text-base">❤️❤️❤️</span>
           </div>
           <button id="btn-arcade-start" type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-sm transition">
@@ -503,19 +579,72 @@
         </div>
       </div>
 
-      <!-- Canvas Container -->
-      <div id="arcade-container" class="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden border-2 border-sky-200 bg-gradient-to-b from-sky-100 via-amber-50 to-emerald-100">
-        <canvas id="arcade-canvas" class="w-full h-full block"></canvas>
+      <!-- Level Progression Roadmap Indicator -->
+      <div class="mb-3 bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-700">ลำดับความยาก:</span>
+          <span class="px-2 py-0.5 rounded-md font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">1. ง่าย (0-199)</span>
+          <span>➔</span>
+          <span class="px-2 py-0.5 rounded-md font-bold bg-amber-100 text-amber-800 border border-amber-200">2. ปานกลาง (200-499)</span>
+          <span>➔</span>
+          <span class="px-2 py-0.5 rounded-md font-bold bg-rose-100 text-rose-800 border border-rose-200">3. ยาก (500+)</span>
+        </div>
+        <div id="arcade-combo-text" class="font-extrabold text-amber-600">
+          ⚡ เก็บต่อเนื่องสะสม Combo & โบนัส XP
+        </div>
       </div>
 
-      <!-- Touch Controls for Mobile/Tablet -->
-      <div class="mt-4 flex items-center justify-center gap-4">
-        <button id="btn-move-left" type="button" class="bg-white hover:bg-sky-50 active:bg-sky-100 border-2 border-sky-300 text-slate-800 font-bold px-6 py-3 rounded-2xl shadow-sm text-sm select-none">
-          ⬅️ เลื่อนซ้าย
+      <!-- Canvas Container -->
+      <div id="arcade-container" class="relative w-full h-88 sm:h-[400px] rounded-2xl overflow-hidden border-2 border-teal-300 shadow-sm bg-gradient-to-b from-sky-50 via-amber-50 to-emerald-50">
+        <canvas id="arcade-canvas" class="w-full h-full block cursor-ew-resize"></canvas>
+      </div>
+
+      <!-- Touch Controls & Instructions for Mobile/Tablet -->
+      <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-slate-500 text-center sm:text-left">
+          💡 <strong>วิธีควบคุม:</strong> แตะลากบนกระดาน หรือกดปุ่มลูกศร ⬅️ ➡️ บนคีย์บอร์ด / มือถือ
+        </p>
+        <div class="flex items-center gap-3">
+          <button id="btn-move-left" type="button" class="bg-white hover:bg-sky-50 active:bg-sky-100 border-2 border-sky-300 text-slate-800 font-bold px-6 py-2.5 rounded-xl shadow-2xs text-sm select-none">
+            ⬅️ เลื่อนซ้าย
+          </button>
+          <button id="btn-move-right" type="button" class="bg-white hover:bg-sky-50 active:bg-sky-100 border-2 border-sky-300 text-slate-800 font-bold px-6 py-2.5 rounded-xl shadow-2xs text-sm select-none">
+            เลื่อนขวา ➡️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini-Game Live Leaderboard Card in Arcade View -->
+    <div class="glass-panel border border-sky-200 rounded-3xl p-4 sm:p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🏆</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-800">ทำเนียบเซียนมินิเกมกู้วิกฤตห้องเรียน (Live Leaderboard)</h3>
+            <p class="text-xs text-slate-500">ท้าทายความไว สะสมคะแนนไต่อันดับเพื่อชิงอันดับ 1 ของการอบรม</p>
+          </div>
+        </div>
+        <button type="button" onclick="switchTab('stats')" class="text-xs text-sky-700 hover:text-sky-800 font-bold underline inline-flex items-center gap-1">
+          <span>ดูสถิติโครงการรวม</span>
+          <span>➔</span>
         </button>
-        <button id="btn-move-right" type="button" class="bg-white hover:bg-sky-50 active:bg-sky-100 border-2 border-sky-300 text-slate-800 font-bold px-6 py-3 rounded-2xl shadow-sm text-sm select-none">
-          เลื่อนขวา ➡️
-        </button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr class="bg-sky-50 text-sky-900 border-b border-sky-200">
+              <th class="py-2.5 px-3 font-bold text-center w-14">อันดับ</th>
+              <th class="py-2.5 px-3 font-bold">ชื่อคุณครูผู้ท้าชิง</th>
+              <th class="py-2.5 px-3 font-bold text-center">ระดับสูงสุด</th>
+              <th class="py-2.5 px-3 font-bold text-center">จำนวนรอบที่เล่น</th>
+              <th class="py-2.5 px-3 font-bold text-right">คะแนนสูงสุด (High Score)</th>
+            </tr>
+          </thead>
+          <tbody id="arcade-live-leaderboard-tbody" class="divide-y divide-slate-100">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -1190,11 +1319,14 @@
 
     // Game & Cloud State
     let state = {
-      user: null, // { uid, name, email, role }
+      user: null, // { uid, name, email, role, grades, school, photoURL, arcadeHighScore, arcadeMaxLevel, arcadePlays }
       completed: {}, // { "01": true }
       quizSolved: {}, // { "01": true }
       notes: {}, // { "01": "ลิงก์ชิ้นงาน..." }
       arcadeBonusXp: 0,
+      arcadeHighScore: 0,
+      arcadeMaxLevel: "ง่าย",
+      arcadePlays: 0,
       filter: "all",
       currentModalId: null,
       soundEnabled: true,
@@ -1250,6 +1382,9 @@
           state.quizSolved = parsed.quizSolved || {};
           state.notes = parsed.notes || {};
           state.arcadeBonusXp = parsed.arcadeBonusXp || 0;
+          state.arcadeHighScore = parsed.arcadeHighScore || (parsed.user && parsed.user.arcadeHighScore) || 0;
+          state.arcadeMaxLevel = parsed.arcadeMaxLevel || (parsed.user && parsed.user.arcadeMaxLevel) || "ง่าย";
+          state.arcadePlays = parsed.arcadePlays || (parsed.user && parsed.user.arcadePlays) || 0;
           state.allTeachers = parsed.allTeachers || defaultSchoolTeachers.slice();
         } else {
           state.allTeachers = defaultSchoolTeachers.slice();
@@ -1275,6 +1410,9 @@
           quizSolved: state.quizSolved,
           notes: state.notes,
           arcadeBonusXp: state.arcadeBonusXp,
+          arcadeHighScore: state.arcadeHighScore,
+          arcadeMaxLevel: state.arcadeMaxLevel,
+          arcadePlays: state.arcadePlays,
           allTeachers: state.allTeachers
         }));
       } catch (e) {
@@ -1296,6 +1434,10 @@
             quizSolved: state.quizSolved,
             notes: state.notes,
             arcadeBonusXp: state.arcadeBonusXp,
+            arcadeHighScore: (state.user && state.user.arcadeHighScore) || state.arcadeHighScore || 0,
+            arcadeMaxLevel: (state.user && state.user.arcadeMaxLevel) || state.arcadeMaxLevel || "ง่าย",
+            arcadePlays: (state.user && state.user.arcadePlays) || state.arcadePlays || 0,
+            arcadeLastPlayed: (state.user && state.user.arcadeLastPlayed) || new Date().toLocaleString("th-TH"),
             updatedAt: new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น."
           }, { merge: true });
         } catch (err) {
@@ -1327,6 +1469,10 @@
         quizSolved: { ...state.quizSolved },
         notes: { ...state.notes },
         arcadeBonusXp: state.arcadeBonusXp,
+        arcadeHighScore: (state.user && state.user.arcadeHighScore) || state.arcadeHighScore || 0,
+        arcadeMaxLevel: (state.user && state.user.arcadeMaxLevel) || state.arcadeMaxLevel || "ง่าย",
+        arcadePlays: (state.user && state.user.arcadePlays) || state.arcadePlays || 0,
+        arcadeLastPlayed: (state.user && state.user.arcadeLastPlayed) || "-",
         updatedAt: nowStr
       };
 
@@ -1874,7 +2020,11 @@
           sDone,
           aDone,
           totalDone,
-          xp
+          xp,
+          arcadeHighScore: t.arcadeHighScore || 0,
+          arcadeMaxLevel: t.arcadeMaxLevel || (t.arcadeHighScore >= 500 ? "ยาก" : t.arcadeHighScore >= 200 ? "ปานกลาง" : "ง่าย"),
+          arcadePlays: t.arcadePlays || 0,
+          arcadeLastPlayed: t.arcadeLastPlayed || t.updatedAt || "-"
         };
       });
 
@@ -2059,6 +2209,9 @@
           });
         }
       }
+
+      // Render Dedicated Mini-Game Statistics & Leaderboards
+      renderGameStatsView(enrichedTeachers);
     }
 
     // SYSTEM 2: Render Official Report View
@@ -2307,32 +2460,101 @@
       }
     }
 
-    // Mini-Game: Classroom Rescue Arcade (HTML5 Canvas)
+    // ==========================================
+    // MINI-GAME ENGINE & LEADERBOARDS (AI Prompt Catcher v2.0)
+    // ==========================================
     const arcadeCanvas = document.getElementById("arcade-canvas");
-    const arcadeCtx = arcadeCanvas.getContext("2d");
+    const arcadeCtx = arcadeCanvas ? arcadeCanvas.getContext("2d") : null;
     let arcadeRunning = false;
     let arcadeAnimId = null;
     let arcadeScore = 0;
     let arcadeLives = 3;
     let playerX = 200;
-    let playerWidth = 96;
+    let playerWidth = 104;
+    let playerHeight = 36;
     let moveLeftPressed = false;
     let moveRightPressed = false;
     let fallingItems = [];
+    let particles = [];
+    let floatingTexts = [];
     let spawnCounter = 0;
+    let currentArcadeLevel = 1;
+    let arcadeCombo = 0;
+    let maxComboThisGame = 0;
+    let levelUpBanner = null; // { text, subText, timer, color }
+    let gameFrameCount = 0;
 
+    // Difficulty Level Algorithm (ง่าย -> ปานกลาง -> ยาก)
+    function getArcadeLevelInfo(score) {
+      if (score < 200) {
+        return {
+          level: 1,
+          name: "ง่าย",
+          badgeIcon: "🟢",
+          badgeText: "🟢 ง่าย (Easy)",
+          badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300",
+          subTitle: "ปูพื้นฐาน AI & Active Learning",
+          speedMin: 2.2,
+          speedMax: 3.0,
+          spawnRate: 48,
+          badRatio: 0.16,
+          sway: 0,
+          targetScore: 200,
+          progressPct: Math.min(100, Math.round((score / 200) * 100))
+        };
+      } else if (score < 500) {
+        return {
+          level: 2,
+          name: "ปานกลาง",
+          badgeIcon: "🟡",
+          badgeText: "🟡 ปานกลาง (Medium)",
+          badgeClass: "bg-amber-100 text-amber-800 border-amber-300",
+          subTitle: "ห้องเรียนเชิงรุก & ระวังงานด่วน",
+          speedMin: 3.4,
+          speedMax: 4.8,
+          spawnRate: 36,
+          badRatio: 0.30,
+          sway: 0.8,
+          targetScore: 500,
+          progressPct: Math.min(100, Math.round(((score - 200) / 300) * 100))
+        };
+      } else {
+        return {
+          level: 3,
+          name: "ยาก",
+          badgeIcon: "🔴",
+          badgeText: "🔴 ยาก (Master)",
+          badgeClass: "bg-rose-100 text-rose-800 border-rose-300",
+          subTitle: "พายุเอกสาร & วิกฤตห้องเรียนระดับเซียน",
+          speedMin: 4.8,
+          speedMax: 6.8,
+          spawnRate: 26,
+          badRatio: 0.44,
+          sway: 1.5,
+          targetScore: 1000,
+          progressPct: Math.min(100, Math.round(((score - 500) / 500) * 100))
+        };
+      }
+    }
+
+    // Resize Canvas smoothly
     function resizeArcadeCanvas() {
       const container = document.getElementById("arcade-container");
-      if (!container) return;
+      if (!container || !arcadeCanvas) return;
       const rect = container.getBoundingClientRect();
-      arcadeCanvas.width = rect.width || 600;
-      arcadeCanvas.height = rect.height || 340;
+      const newW = Math.round(rect.width || 600);
+      const newH = Math.round(rect.height || 380);
+      if (arcadeCanvas.width !== newW || arcadeCanvas.height !== newH) {
+        arcadeCanvas.width = newW;
+        arcadeCanvas.height = newH;
+      }
       if (playerX > arcadeCanvas.width - playerWidth) {
-        playerX = Math.max(0, (arcadeCanvas.width - playerWidth) / 2);
+        playerX = Math.max(8, (arcadeCanvas.width - playerWidth) / 2);
       }
       drawArcadeFrame();
     }
 
+    // Start New Game Session
     function startArcadeGame() {
       playTone("click");
       if (arcadeAnimId) {
@@ -2343,163 +2565,825 @@
       arcadeRunning = true;
       arcadeScore = 0;
       arcadeLives = 3;
+      arcadeCombo = 0;
+      maxComboThisGame = 0;
+      currentArcadeLevel = 1;
       fallingItems = [];
+      particles = [];
+      floatingTexts = [];
+      levelUpBanner = null;
       spawnCounter = 0;
+      gameFrameCount = 0;
       playerX = (arcadeCanvas.width - playerWidth) / 2;
+
       updateArcadeHud();
-      document.getElementById("btn-arcade-start").innerText = "🔄 เริ่มใหม่";
+      const startBtn = document.getElementById("btn-arcade-start");
+      if (startBtn) startBtn.innerText = "🔄 เริ่มใหม่";
+
+      showToast("🎮", "เริ่มเกมกู้วิกฤตห้องเรียน!", "เก็บไอเทม AI สะสมคะแนนไต่อันดับแชมป์");
       arcadeLoop();
     }
 
+    // Update HUD & Level Badges
     function updateArcadeHud() {
-      document.getElementById("arcade-score").innerText = arcadeScore;
-      document.getElementById("arcade-lives").innerText = "❤️".repeat(Math.max(0, arcadeLives)) || "💔";
+      const lvl = getArcadeLevelInfo(arcadeScore);
+      const scoreEl = document.getElementById("arcade-score");
+      const livesEl = document.getElementById("arcade-lives");
+      const lvlBadgeEl = document.getElementById("arcade-level-badge");
+      const lvlPillEl = document.getElementById("arcade-level-pill");
+      const highEl = document.getElementById("arcade-hud-high-score");
+      const comboEl = document.getElementById("arcade-combo-text");
+
+      if (scoreEl) scoreEl.innerText = arcadeScore;
+      if (livesEl) livesEl.innerText = "❤️".repeat(Math.max(0, arcadeLives)) || "💔";
+      if (lvlBadgeEl) {
+        lvlBadgeEl.innerText = lvl.badgeText;
+        lvlBadgeEl.className = `font-extrabold ${lvl.level === 3 ? 'text-rose-700' : lvl.level === 2 ? 'text-amber-700' : 'text-emerald-700'}`;
+      }
+      if (lvlPillEl) {
+        lvlPillEl.innerText = `${lvl.badgeText} • เป้าหมาย: ${lvl.targetScore} แต้ม`;
+        lvlPillEl.className = `text-xs px-2.5 py-0.5 rounded-full font-bold border ${lvl.badgeClass}`;
+      }
+      const currentBest = (state.user && state.user.arcadeHighScore) || state.arcadeHighScore || 0;
+      if (highEl) highEl.innerText = Math.max(currentBest, arcadeScore);
+
+      if (comboEl) {
+        if (arcadeCombo > 1) {
+          comboEl.className = "font-extrabold text-amber-600 animate-pulse";
+          comboEl.innerText = `⚡ COMBO x${arcadeCombo}! (+${(arcadeCombo - 1) * 3} โบนัส)`;
+        } else {
+          comboEl.className = "font-extrabold text-slate-500";
+          comboEl.innerText = "⚡ เก็บต่อเนื่องสะสม Combo & โบนัส XP";
+        }
+      }
     }
 
+    // Spawn Items with Dynamic Rarity and Levels
     function spawnArcadeItem() {
-      const goodItems = [
-        { emoji: "🤖", label: "AI Prompt", points: 10, good: true, color: "#0284c7" },
-        { emoji: "🎨", label: "สื่อ Canva", points: 15, good: true, color: "#db2777" },
-        { emoji: "⭐", label: "Active Learning", points: 20, good: true, color: "#059669" }
+      const lvl = getArcadeLevelInfo(arcadeScore);
+      const goodPoolLvl1 = [
+        { emoji: "🤖", label: "AI Prompt", points: 10, color: "#0284c7" },
+        { emoji: "🎨", label: "สื่อ Canva", points: 15, color: "#d946ef" },
+        { emoji: "💡", label: "Active Learning", points: 20, color: "#059669" },
+        { emoji: "☕", label: "กาแฟเติมพลัง", points: 15, color: "#b45309", heal: true }
       ];
-      const badItems = [
-        { emoji: "💣", label: "งานด่วนนอกแผน!", points: 0, good: false, color: "#e11d48" }
+      const goodPoolLvl2 = [
+        ...goodPoolLvl1,
+        { emoji: "📚", label: "NotebookLM", points: 25, color: "#6366f1" },
+        { emoji: "⭐", label: "นวัตกรรมเด่น", points: 30, color: "#ea580c" }
       ];
-      const isGood = Math.random() > 0.28;
-      const template = isGood
-        ? goodItems[Math.floor(Math.random() * goodItems.length)]
-        : badItems[0];
+      const goodPoolLvl3 = [
+        ...goodPoolLvl2,
+        { emoji: "👑", label: "AI Super ครู", points: 50, color: "#eab308" },
+        { emoji: "🏆", label: "ว.PA ฉลุย", points: 40, color: "#06b6d4" }
+      ];
+
+      const badPoolLvl1 = [
+        { emoji: "💣", label: "งานด่วนนอกแผน!", points: 0, color: "#e11d48", good: false }
+      ];
+      const badPoolLvl2 = [
+        { emoji: "💣", label: "งานด่วนนอกแผน!", points: 0, color: "#e11d48", good: false },
+        { emoji: "📋", label: "เอกสารประเมินด่วน!", points: 0, color: "#dc2626", good: false }
+      ];
+      const badPoolLvl3 = [
+        { emoji: "💣", label: "งานด่วนนอกแผน!", points: 0, color: "#e11d48", good: false },
+        { emoji: "📋", label: "เอกสารประเมินด่วน!", points: 0, color: "#dc2626", good: false },
+        { emoji: "💥", label: "ประชุมเบียดสอน!", points: 0, color: "#b91c1c", good: false }
+      ];
+
+      const poolGood = lvl.level === 3 ? goodPoolLvl3 : lvl.level === 2 ? goodPoolLvl2 : goodPoolLvl1;
+      const poolBad = lvl.level === 3 ? badPoolLvl3 : lvl.level === 2 ? badPoolLvl2 : badPoolLvl1;
+
+      const isBad = Math.random() < lvl.badRatio;
+      const itemTemplate = isBad
+        ? { ...poolBad[Math.floor(Math.random() * poolBad.length)], good: false }
+        : { ...poolGood[Math.floor(Math.random() * poolGood.length)], good: true };
+
+      const vy = lvl.speedMin + Math.random() * (lvl.speedMax - lvl.speedMin);
+      const startX = Math.random() * Math.max(40, arcadeCanvas.width - 90) + 45;
 
       fallingItems.push({
-        x: Math.random() * Math.max(40, arcadeCanvas.width - 80) + 40,
-        y: -25,
-        vy: 2.2 + Math.random() * 1.8 + Math.min(2.5, arcadeScore / 80),
-        ...template
+        x: startX,
+        origX: startX,
+        y: -30,
+        vy: vy,
+        radius: 20,
+        sway: lvl.sway,
+        phase: Math.random() * Math.PI * 2,
+        ...itemTemplate
       });
     }
 
+    // Draw Subtle Classroom / School Vector Backdrop
+    function drawClassroomBackground(ctx, w, h) {
+      // 1. Soft classroom wall gradient
+      const wallGrad = ctx.createLinearGradient(0, 0, 0, h);
+      wallGrad.addColorStop(0, "#f0f9ff");
+      wallGrad.addColorStop(0.65, "#f8fafc");
+      wallGrad.addColorStop(1, "#fef3c7");
+      ctx.fillStyle = wallGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Classroom tall window on left with streaming sunbeams
+      ctx.save();
+      const winX = 14;
+      const winY = 20;
+      const winW = Math.min(90, Math.max(50, w * 0.14));
+      const winH = Math.min(190, h * 0.48);
+
+      // Window glass & subtle frame
+      ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.fillRect(winX, winY, winW, winH);
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.45)";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(winX, winY, winW, winH);
+
+      // Window crossbars
+      ctx.beginPath();
+      ctx.moveTo(winX + winW / 2, winY);
+      ctx.lineTo(winX + winW / 2, winY + winH);
+      ctx.moveTo(winX, winY + winH / 2);
+      ctx.lineTo(winX + winW, winY + winH / 2);
+      ctx.stroke();
+
+      // Soft sunbeams streaming across room
+      const beamGrad = ctx.createLinearGradient(winX, winY, w * 0.7, h);
+      beamGrad.addColorStop(0, "rgba(254, 240, 138, 0.22)");
+      beamGrad.addColorStop(0.5, "rgba(254, 240, 138, 0.08)");
+      beamGrad.addColorStop(1, "rgba(254, 240, 138, 0)");
+      ctx.fillStyle = beamGrad;
+      ctx.beginPath();
+      ctx.moveTo(winX, winY);
+      ctx.lineTo(winX + winW, winY);
+      ctx.lineTo(w * 0.65, h - 30);
+      ctx.lineTo(w * 0.2, h - 30);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      // 3. Central Chalkboard (กระดานดำห้องเรียน)
+      ctx.save();
+      const boardW = Math.min(480, Math.max(260, w * 0.62));
+      const boardH = Math.min(180, Math.max(120, h * 0.44));
+      const boardX = (w - boardW) / 2 + (winW * 0.25);
+      const boardY = 20;
+
+      // Wooden Frame
+      ctx.fillStyle = "rgba(180, 83, 9, 0.25)";
+      ctx.beginPath();
+      ctx.roundRect(boardX - 6, boardY - 6, boardW + 12, boardH + 12, 8);
+      ctx.fill();
+
+      // Chalkboard Surface (Deep dark slate green with low opacity)
+      const boardGrad = ctx.createLinearGradient(boardX, boardY, boardX, boardY + boardH);
+      boardGrad.addColorStop(0, "rgba(20, 83, 45, 0.16)");
+      boardGrad.addColorStop(1, "rgba(6, 78, 59, 0.24)");
+      ctx.fillStyle = boardGrad;
+      ctx.beginPath();
+      ctx.roundRect(boardX, boardY, boardW, boardH, 6);
+      ctx.fill();
+
+      // Chalk ledge
+      ctx.fillStyle = "rgba(180, 83, 9, 0.35)";
+      ctx.fillRect(boardX - 4, boardY + boardH + 4, boardW + 8, 4);
+
+      // Subtle chalk doodles and pedagogical concepts
+      ctx.fillStyle = "rgba(255, 255, 255, 0.24)";
+      ctx.font = "bold 13px 'Prompt', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("AI-Prompt ครูไทย ✦ Active Learning", boardX + boardW / 2, boardY + 30);
+
+      ctx.font = "11px 'Prompt', sans-serif";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
+      ctx.fillText("Context + Role + Task + Example", boardX + boardW / 2, boardY + 52);
+
+      // Formula and pedagogy chalk text
+      ctx.textAlign = "left";
+      ctx.fillText("E = mc²", boardX + 16, boardY + boardH - 20);
+      ctx.fillText("PBL ➔ SAR", boardX + 16, boardY + boardH - 38);
+
+      ctx.textAlign = "right";
+      ctx.fillText("ว.PA 🌟", boardX + boardW - 16, boardY + boardH - 20);
+      ctx.fillText("PLC นวัตกรรม", boardX + boardW - 16, boardY + boardH - 38);
+      ctx.restore();
+
+      // 4. Classroom Wall Clock at top right
+      ctx.save();
+      const clockX = Math.min(w - 32, boardX + boardW + 36);
+      const clockY = 36;
+      if (clockX < w - 18) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+        ctx.beginPath();
+        ctx.arc(clockX, clockY, 17, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(100, 116, 139, 0.35)";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Clock hands
+        ctx.strokeStyle = "rgba(51, 65, 85, 0.55)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(clockX, clockY);
+        ctx.lineTo(clockX, clockY - 9);
+        ctx.moveTo(clockX, clockY);
+        ctx.lineTo(clockX + 7, clockY);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 5. Wooden classroom floor planks at bottom
+      ctx.save();
+      const floorH = 26;
+      const floorY = h - floorH;
+      const floorGrad = ctx.createLinearGradient(0, floorY, 0, h);
+      floorGrad.addColorStop(0, "rgba(217, 119, 6, 0.28)");
+      floorGrad.addColorStop(1, "rgba(180, 83, 9, 0.38)");
+      ctx.fillStyle = floorGrad;
+      ctx.fillRect(0, floorY, w, floorH);
+
+      ctx.strokeStyle = "rgba(146, 64, 14, 0.2)";
+      ctx.lineWidth = 1;
+      for (let fx = 0; fx < w; fx += 55) {
+        ctx.beginPath();
+        ctx.moveTo(fx, floorY);
+        ctx.lineTo(fx, h);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Render Canvas Frame
     function drawArcadeFrame() {
       if (!arcadeCtx) return;
       const w = arcadeCanvas.width;
       const h = arcadeCanvas.height;
       arcadeCtx.clearRect(0, 0, w, h);
 
-      // Decorative clouds
-      arcadeCtx.fillStyle = "rgba(255, 255, 255, 0.7)";
-      arcadeCtx.beginPath();
-      arcadeCtx.arc(80, 50, 24, 0, Math.PI * 2);
-      arcadeCtx.arc(105, 45, 30, 0, Math.PI * 2);
-      arcadeCtx.arc(130, 52, 22, 0, Math.PI * 2);
-      arcadeCtx.fill();
+      // Draw subtle classroom vector backdrop
+      drawClassroomBackground(arcadeCtx, w, h);
 
-      // Ground
-      arcadeCtx.fillStyle = "#bbf7d0";
-      arcadeCtx.fillRect(0, h - 22, w, 22);
-
-      // Player Basket (Teacher Hero)
-      const basketY = h - 54;
-      arcadeCtx.fillStyle = "#0284c7";
-      arcadeCtx.beginPath();
-      arcadeCtx.roundRect(playerX, basketY, playerWidth, 34, 12);
-      arcadeCtx.fill();
-
-      arcadeCtx.fillStyle = "#ffffff";
-      arcadeCtx.font = "bold 13px Prompt, sans-serif";
-      arcadeCtx.textAlign = "center";
-      arcadeCtx.fillText("👩‍🏫 ครูผู้กล้า", playerX + playerWidth / 2, basketY + 22);
-
-      // Falling Items
+      // Draw Falling Items
       fallingItems.forEach(item => {
+        arcadeCtx.save();
+        // Item shadow & outer aura
+        arcadeCtx.shadowColor = item.color;
+        arcadeCtx.shadowBlur = item.good ? 8 : 12;
+
+        // Radial badge fill
         arcadeCtx.fillStyle = "#ffffff";
         arcadeCtx.beginPath();
-        arcadeCtx.arc(item.x, item.y, 20, 0, Math.PI * 2);
+        arcadeCtx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
         arcadeCtx.fill();
-        arcadeCtx.lineWidth = 2;
+        arcadeCtx.lineWidth = 2.5;
         arcadeCtx.strokeStyle = item.color;
         arcadeCtx.stroke();
+        arcadeCtx.restore();
 
-        arcadeCtx.font = "18px sans-serif";
+        // Emoji
+        arcadeCtx.font = "20px sans-serif";
         arcadeCtx.textAlign = "center";
-        arcadeCtx.fillText(item.emoji, item.x, item.y + 6);
+        arcadeCtx.fillText(item.emoji, item.x, item.y + 7);
+
+        // Label Tag
+        arcadeCtx.save();
+        arcadeCtx.fillStyle = item.good ? "rgba(255, 255, 255, 0.92)" : "rgba(254, 226, 226, 0.95)";
+        arcadeCtx.beginPath();
+        arcadeCtx.roundRect(item.x - 42, item.y + 24, 84, 18, 5);
+        arcadeCtx.fill();
+        arcadeCtx.strokeStyle = item.color;
+        arcadeCtx.lineWidth = 1;
+        arcadeCtx.stroke();
 
         arcadeCtx.fillStyle = item.color;
-        arcadeCtx.font = "bold 11px Prompt, sans-serif";
-        arcadeCtx.fillText(item.label, item.x, item.y + 34);
+        arcadeCtx.font = "bold 10px Prompt, sans-serif";
+        arcadeCtx.textAlign = "center";
+        arcadeCtx.fillText(item.label, item.x, item.y + 36);
+        arcadeCtx.restore();
       });
 
-      // Overlay when not running
-      if (!arcadeRunning) {
-        arcadeCtx.fillStyle = "rgba(255, 255, 255, 0.82)";
-        arcadeCtx.fillRect(0, 0, w, h);
-        arcadeCtx.fillStyle = "#0f172a";
-        arcadeCtx.font = "bold 20px Prompt, sans-serif";
+      // Draw Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.025;
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        arcadeCtx.save();
+        arcadeCtx.globalAlpha = Math.max(0, p.alpha);
+        arcadeCtx.fillStyle = p.color;
+        arcadeCtx.beginPath();
+        arcadeCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        arcadeCtx.fill();
+        arcadeCtx.restore();
+      }
+
+      // Draw Floating Texts
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y += ft.vy;
+        ft.alpha -= 0.02;
+        if (ft.alpha <= 0) {
+          floatingTexts.splice(i, 1);
+          continue;
+        }
+        arcadeCtx.save();
+        arcadeCtx.globalAlpha = Math.max(0, ft.alpha);
+        arcadeCtx.font = "bold 13px 'Prompt', sans-serif";
+        arcadeCtx.fillStyle = ft.color;
         arcadeCtx.textAlign = "center";
-        const msg = arcadeLives <= 0
-          ? `จบเกม! คุณได้ ${arcadeScore} คะแนน (รับโบนัส XP สะสมแล้ว)`
-          : "พร้อมลุยภารกิจกู้วิกฤตห้องเรียนหรือยัง?";
-        arcadeCtx.fillText(msg, w / 2, h / 2 - 10);
-        arcadeCtx.fillStyle = "#0284c7";
-        arcadeCtx.font = "14px Prompt, sans-serif";
-        arcadeCtx.fillText("กดปุ่ม '▶️ เริ่มมินิเกม' ด้านบนเพื่อเริ่มเล่นได้เลย!", w / 2, h / 2 + 20);
+        arcadeCtx.shadowColor = "rgba(255, 255, 255, 0.9)";
+        arcadeCtx.shadowBlur = 4;
+        arcadeCtx.fillText(ft.text, ft.x, ft.y);
+        arcadeCtx.restore();
+      }
+
+      // Draw Player Catcher (Teacher Hero Podium)
+      const basketY = h - 56;
+      arcadeCtx.save();
+      // Glowing thruster / hover aura
+      arcadeCtx.shadowColor = "#38bdf8";
+      arcadeCtx.shadowBlur = 12;
+
+      // Podium gradient
+      const podGrad = arcadeCtx.createLinearGradient(playerX, basketY, playerX + playerWidth, basketY + playerHeight);
+      podGrad.addColorStop(0, "#0284c7");
+      podGrad.addColorStop(1, "#4f46e5");
+      arcadeCtx.fillStyle = podGrad;
+      arcadeCtx.beginPath();
+      arcadeCtx.roundRect(playerX, basketY, playerWidth, playerHeight, 14);
+      arcadeCtx.fill();
+
+      // Top highlight border
+      arcadeCtx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+      arcadeCtx.lineWidth = 2;
+      arcadeCtx.stroke();
+      arcadeCtx.restore();
+
+      // Teacher Name on Catcher
+      const teacherName = (state.user && state.user.name) ? state.user.name.split(" ")[0] : "ครูผู้กล้า";
+      arcadeCtx.fillStyle = "#ffffff";
+      arcadeCtx.font = "bold 12px Prompt, sans-serif";
+      arcadeCtx.textAlign = "center";
+      arcadeCtx.fillText(`👩‍🏫 ${teacherName}`, playerX + playerWidth / 2, basketY + 23);
+
+      // Combo indicator above player if active
+      if (arcadeCombo > 1) {
+        arcadeCtx.save();
+        arcadeCtx.fillStyle = "#d97706";
+        arcadeCtx.font = "bold 11px Prompt, sans-serif";
+        arcadeCtx.textAlign = "center";
+        arcadeCtx.fillText(`⚡ Combo x${arcadeCombo}!`, playerX + playerWidth / 2, basketY - 8);
+        arcadeCtx.restore();
+      }
+
+      // Level Up Banner Announcement
+      if (levelUpBanner && levelUpBanner.timer > 0) {
+        levelUpBanner.timer -= 1;
+        arcadeCtx.save();
+        const bannerW = Math.min(420, w * 0.85);
+        const bannerH = 56;
+        const bannerX = (w - bannerW) / 2;
+        const bannerY = h / 2 - 40;
+
+        arcadeCtx.fillStyle = "rgba(15, 23, 42, 0.88)";
+        arcadeCtx.beginPath();
+        arcadeCtx.roundRect(bannerX, bannerY, bannerW, bannerH, 16);
+        arcadeCtx.fill();
+        arcadeCtx.strokeStyle = levelUpBanner.color;
+        arcadeCtx.lineWidth = 3;
+        arcadeCtx.stroke();
+
+        arcadeCtx.fillStyle = "#ffffff";
+        arcadeCtx.font = "bold 16px Prompt, sans-serif";
+        arcadeCtx.textAlign = "center";
+        arcadeCtx.fillText(levelUpBanner.text, w / 2, bannerY + 24);
+
+        arcadeCtx.fillStyle = levelUpBanner.color;
+        arcadeCtx.font = "12px Prompt, sans-serif";
+        arcadeCtx.fillText(levelUpBanner.subText, w / 2, bannerY + 44);
+        arcadeCtx.restore();
+      }
+
+      // Start Screen / Game Over Frosted Card Overlay
+      if (!arcadeRunning) {
+        arcadeCtx.save();
+        arcadeCtx.fillStyle = "rgba(255, 255, 255, 0.85)";
+        arcadeCtx.fillRect(0, 0, w, h);
+
+        const cardW = Math.min(440, w * 0.9);
+        const cardH = Math.min(260, h * 0.85);
+        const cardX = (w - cardW) / 2;
+        const cardY = (h - cardH) / 2;
+
+        arcadeCtx.fillStyle = "#ffffff";
+        arcadeCtx.shadowColor = "rgba(0, 0, 0, 0.12)";
+        arcadeCtx.shadowBlur = 18;
+        arcadeCtx.beginPath();
+        arcadeCtx.roundRect(cardX, cardY, cardW, cardH, 20);
+        arcadeCtx.fill();
+        arcadeCtx.strokeStyle = "#e2e8f0";
+        arcadeCtx.lineWidth = 1.5;
+        arcadeCtx.stroke();
+        arcadeCtx.restore();
+
+        arcadeCtx.textAlign = "center";
+        if (arcadeLives <= 0) {
+          const finalLvl = getArcadeLevelInfo(arcadeScore);
+          arcadeCtx.fillStyle = "#0f172a";
+          arcadeCtx.font = "bold 20px Prompt, sans-serif";
+          arcadeCtx.fillText("🏁 จบการแข่งขัน!", w / 2, cardY + 42);
+
+          arcadeCtx.fillStyle = "#0284c7";
+          arcadeCtx.font = "bold 28px Prompt, sans-serif";
+          arcadeCtx.fillText(`${arcadeScore} คะแนน`, w / 2, cardY + 80);
+
+          arcadeCtx.fillStyle = finalLvl.level === 3 ? "#e11d48" : finalLvl.level === 2 ? "#d97706" : "#059669";
+          arcadeCtx.font = "bold 14px Prompt, sans-serif";
+          arcadeCtx.fillText(`ระดับที่พิชิตได้: ${finalLvl.badgeText}`, w / 2, cardY + 108);
+
+          const currentBest = (state.user && state.user.arcadeHighScore) || state.arcadeHighScore || 0;
+          arcadeCtx.fillStyle = "#64748b";
+          arcadeCtx.font = "12px Prompt, sans-serif";
+          arcadeCtx.fillText(`สถิติสูงสุดของคุณ: ${Math.max(currentBest, arcadeScore)} แต้ม (รับโบนัส XP แล้ว)`, w / 2, cardY + 134);
+
+          arcadeCtx.fillStyle = "#0284c7";
+          arcadeCtx.font = "bold 13px Prompt, sans-serif";
+          arcadeCtx.fillText("กดปุ่ม '▶️ เริ่มมินิเกม' ด้านบน เพื่อท้าทายสถิติใหม่!", w / 2, cardY + 170);
+        } else {
+          arcadeCtx.fillStyle = "#0f172a";
+          arcadeCtx.font = "bold 20px Prompt, sans-serif";
+          arcadeCtx.fillText("🎮 มินิเกมกู้วิกฤตห้องเรียน (AI Catcher)", w / 2, cardY + 42);
+
+          arcadeCtx.fillStyle = "#475569";
+          arcadeCtx.font = "13px Prompt, sans-serif";
+          arcadeCtx.fillText("เลื่อนตะกร้าเก็บไอเทม AI-Prompt และหลบงานด่วนนอกแผน!", w / 2, cardY + 74);
+
+          arcadeCtx.fillStyle = "#059669";
+          arcadeCtx.font = "bold 12px Prompt, sans-serif";
+          arcadeCtx.fillText("🟢 ง่าย (0-199) ➔ 🟡 ปานกลาง (200-499) ➔ 🔴 ยาก (500+)", w / 2, cardY + 104);
+
+          arcadeCtx.fillStyle = "#64748b";
+          arcadeCtx.font = "12px Prompt, sans-serif";
+          arcadeCtx.fillText("คะแนนจะถูกบันทึกขึ้นทำเนียบแชมป์และซิงค์ Cloud เรียลไทม์", w / 2, cardY + 132);
+
+          arcadeCtx.fillStyle = "#0284c7";
+          arcadeCtx.font = "bold 14px Prompt, sans-serif";
+          arcadeCtx.fillText("กดปุ่ม '▶️ เริ่มมินิเกม' ด้านบนเพื่อประลองความไว!", w / 2, cardY + 170);
+        }
       }
     }
 
+    // Main Arcade Game Physics Loop
     function arcadeLoop() {
       if (!arcadeRunning) return;
       const w = arcadeCanvas.width;
       const h = arcadeCanvas.height;
+      gameFrameCount++;
 
-      if (moveLeftPressed) playerX = Math.max(8, playerX - 6.5);
-      if (moveRightPressed) playerX = Math.min(w - playerWidth - 8, playerX + 6.5);
+      // Player Movement
+      const moveSpeed = 7.0;
+      if (moveLeftPressed) playerX = Math.max(8, playerX - moveSpeed);
+      if (moveRightPressed) playerX = Math.min(w - playerWidth - 8, playerX + moveSpeed);
 
+      // Level Progression Check & Fanfare
+      const oldLvl = currentArcadeLevel;
+      const lvlInfo = getArcadeLevelInfo(arcadeScore);
+      if (lvlInfo.level > oldLvl) {
+        currentArcadeLevel = lvlInfo.level;
+        levelUpBanner = {
+          text: `🎉 LEVEL UP! ก้าวสู่ ${lvlInfo.badgeText}`,
+          subText: lvlInfo.subTitle,
+          timer: 130,
+          color: lvlInfo.level === 2 ? "#d97706" : "#dc2626"
+        };
+        playTone("badge");
+        showToast("⭐ LEVEL UP!", `ก้าวสู่ ${lvlInfo.badgeText}`, lvlInfo.subTitle);
+
+        // Burst celebratory particles
+        for (let p = 0; p < 24; p++) {
+          particles.push({
+            x: w / 2 + (Math.random() * 200 - 100),
+            y: h / 2 + (Math.random() * 80 - 40),
+            vx: (Math.random() - 0.5) * 7,
+            vy: (Math.random() - 0.5) * 7 - 2,
+            color: lvlInfo.level === 2 ? "#f59e0b" : "#ef4444",
+            alpha: 1.0,
+            size: Math.random() * 5 + 3
+          });
+        }
+      }
+
+      // Spawning Items based on dynamic level spawn rate
       spawnCounter++;
-      if (spawnCounter >= 48) {
+      if (spawnCounter >= lvlInfo.spawnRate) {
         spawnCounter = 0;
         spawnArcadeItem();
       }
 
-      const basketY = h - 54;
+      const basketY = h - 56;
       for (let i = fallingItems.length - 1; i >= 0; i--) {
         const it = fallingItems[i];
         it.y += it.vy;
 
-        // Check collision with player basket
+        // Subtle horizontal sway on higher levels
+        if (it.sway > 0) {
+          it.x = it.origX + Math.sin(it.phase + it.y / 24) * (it.sway * 18);
+          it.x = Math.max(25, Math.min(w - 25, it.x));
+        }
+
+        // Collision Check with Teacher Podium
         const hitX = it.x >= playerX - 12 && it.x <= playerX + playerWidth + 12;
-        const hitY = it.y + 16 >= basketY && it.y - 16 <= basketY + 34;
+        const hitY = it.y + 16 >= basketY && it.y - 16 <= basketY + playerHeight;
 
         if (hitX && hitY) {
           if (it.good) {
-            arcadeScore += it.points;
+            arcadeCombo += 1;
+            if (arcadeCombo > maxComboThisGame) maxComboThisGame = arcadeCombo;
+            const comboBonus = arcadeCombo > 1 ? (arcadeCombo - 1) * 3 : 0;
+            const earnedPts = it.points + comboBonus;
+            arcadeScore += earnedPts;
+
+            // Coffee Healing Logic
+            if (it.heal) {
+              if (arcadeLives < 3) {
+                arcadeLives += 1;
+                floatingTexts.push({
+                  x: it.x,
+                  y: basketY - 10,
+                  text: `+1 ❤️ กาแฟเติมพลัง!`,
+                  color: "#16a34a",
+                  alpha: 1.0,
+                  vy: -1.6
+                });
+              } else {
+                floatingTexts.push({
+                  x: it.x,
+                  y: basketY - 10,
+                  text: `+${earnedPts} พลังใจเต็ม!`,
+                  color: "#d97706",
+                  alpha: 1.0,
+                  vy: -1.6
+                });
+              }
+            } else {
+              const comboStr = arcadeCombo > 1 ? ` (x${arcadeCombo})` : "";
+              floatingTexts.push({
+                x: it.x,
+                y: basketY - 10,
+                text: `+${earnedPts}${comboStr}`,
+                color: it.color,
+                alpha: 1.0,
+                vy: -1.6
+              });
+            }
+
+            // Sparkle Particles
+            for (let p = 0; p < 8; p++) {
+              particles.push({
+                x: it.x,
+                y: it.y,
+                vx: (Math.random() - 0.5) * 5,
+                vy: (Math.random() - 0.5) * 5 - 1.5,
+                color: it.color,
+                alpha: 1.0,
+                size: Math.random() * 4 + 2
+              });
+            }
             playTone("click");
           } else {
+            // Hazard hit
             arcadeLives -= 1;
+            arcadeCombo = 0; // Combo broken
+            floatingTexts.push({
+              x: it.x,
+              y: basketY - 10,
+              text: `-1 ❤️ งานด่วนช็อตฟีล!`,
+              color: "#e11d48",
+              alpha: 1.0,
+              vy: -1.8
+            });
+
+            // Red shockwave particles
+            for (let p = 0; p < 12; p++) {
+              particles.push({
+                x: it.x,
+                y: it.y,
+                vx: (Math.random() - 0.5) * 6,
+                vy: (Math.random() - 0.5) * 6,
+                color: "#f43f5e",
+                alpha: 1.0,
+                size: Math.random() * 6 + 3
+              });
+            }
             playTone("wrong");
           }
+
           updateArcadeHud();
           fallingItems.splice(i, 1);
           continue;
         }
 
+        // Out of screen bottom
         if (it.y > h + 30) {
           fallingItems.splice(i, 1);
         }
       }
 
+      // Game Over Trigger
       if (arcadeLives <= 0) {
         arcadeRunning = false;
-        const earnedXp = Math.min(150, Math.floor(arcadeScore / 2));
+        const finalScore = arcadeScore;
+        const finalLevel = getArcadeLevelInfo(finalScore);
+
+        const currentBest = (state.user && state.user.arcadeHighScore) || state.arcadeHighScore || 0;
+        const isNewHighScore = finalScore > currentBest;
+
+        state.arcadeHighScore = Math.max(currentBest, finalScore);
+        state.arcadeMaxLevel = finalLevel.name;
+        state.arcadePlays = (state.arcadePlays || 0) + 1;
+
+        const earnedXp = Math.min(200, Math.floor(finalScore / 2));
         if (earnedXp > 0) {
-          state.arcadeBonusXp += earnedXp;
-          saveState();
-          calculateStats();
-          showToast("🎮", `รับโบนัสจากมินิเกม +${earnedXp} XP!`, `ทำคะแนนได้ ${arcadeScore} แต้ม`);
+          state.arcadeBonusXp = (state.arcadeBonusXp || 0) + earnedXp;
         }
+
+        if (state.user) {
+          state.user.arcadeHighScore = state.arcadeHighScore;
+          state.user.arcadeMaxLevel = state.arcadeMaxLevel;
+          state.user.arcadePlays = (state.user.arcadePlays || 0) + 1;
+          state.user.arcadeLastPlayed = new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น.";
+        }
+
+        saveState();
+        syncCurrentUserIntoTeachersList();
+        calculateStats();
+        renderStatsView();
+
+        if (isNewHighScore && finalScore > 0) {
+          playTone("badge");
+          showToast("🏆 NEW RECORD!", `สร้างสถิติสูงสุดใหม่: ${finalScore} คะแนน!`, `ระดับ: ${finalLevel.badgeText} (รับโบนัส +${earnedXp} XP)`);
+        } else {
+          showToast("🎮 จบเกม!", `คุณทำได้ ${finalScore} คะแนน (ระดับ ${finalLevel.name})`, `รับโบนัสสะสม +${earnedXp} XP`);
+        }
+
         drawArcadeFrame();
         return;
       }
 
       drawArcadeFrame();
       arcadeAnimId = requestAnimationFrame(arcadeLoop);
+    }
+
+    // SYSTEM: Render Dedicated Game Statistics & Leaderboards
+    function renderGameStatsView(enrichedTeachers) {
+      if (!enrichedTeachers || enrichedTeachers.length === 0) return;
+
+      // Sort by Game High Score descending
+      const gameRanked = [...enrichedTeachers].sort((a, b) => (b.arcadeHighScore || 0) - (a.arcadeHighScore || 0));
+
+      const topTeacher = gameRanked[0];
+      const highestScore = (topTeacher && topTeacher.arcadeHighScore) || 0;
+
+      // Update Mini-Game KPI Cards
+      const champEl = document.getElementById("game-kpi-champ");
+      const champDetailEl = document.getElementById("game-kpi-champ-detail");
+      const highEl = document.getElementById("game-kpi-highscore");
+      const lvlBadgeEl = document.getElementById("game-kpi-level-badge");
+      const maxLvlEl = document.getElementById("game-kpi-max-level");
+      const playsEl = document.getElementById("game-kpi-total-plays");
+      const avgPlaysEl = document.getElementById("game-kpi-avg-plays");
+
+      if (champEl) {
+        if (highestScore > 0 && topTeacher) {
+          champEl.innerText = topTeacher.name;
+          champDetailEl.innerText = `${highestScore} แต้ม (${topTeacher.school || "หน่วยงาน"})`;
+        } else {
+          champEl.innerText = "-";
+          champDetailEl.innerText = "ยังไม่มีผู้บันทึกสถิติ";
+        }
+      }
+
+      if (highEl) {
+        highEl.innerText = `${highestScore.toLocaleString()} แต้ม`;
+        const topLvl = getArcadeLevelInfo(highestScore);
+        if (lvlBadgeEl) lvlBadgeEl.innerText = `ระดับ: ${topLvl.badgeText}`;
+      }
+
+      if (maxLvlEl) {
+        if (gameRanked.some(t => (t.arcadeHighScore || 0) >= 500)) {
+          maxLvlEl.innerText = "🔴 ระดับยาก (Master)";
+          maxLvlEl.className = "text-lg font-extrabold text-rose-700 mt-1";
+        } else if (gameRanked.some(t => (t.arcadeHighScore || 0) >= 200)) {
+          maxLvlEl.innerText = "🟡 ระดับปานกลาง";
+          maxLvlEl.className = "text-lg font-extrabold text-amber-700 mt-1";
+        } else {
+          maxLvlEl.innerText = "🟢 ระดับง่าย";
+          maxLvlEl.className = "text-lg font-extrabold text-emerald-700 mt-1";
+        }
+      }
+
+      const totalPlays = enrichedTeachers.reduce((acc, t) => acc + (t.arcadePlays || 0), 0);
+      if (playsEl) playsEl.innerText = `${totalPlays.toLocaleString()} ครั้ง`;
+      if (avgPlaysEl) avgPlaysEl.innerText = `เฉลี่ย ${(totalPlays / Math.max(1, enrichedTeachers.length)).toFixed(1)} ครั้ง/คน`;
+
+      // Render Game Leaderboard in #view-stats
+      const statsGameTbody = document.getElementById("stats-game-leaderboard-tbody");
+      if (statsGameTbody) {
+        statsGameTbody.innerHTML = gameRanked.map((t, idx) => {
+          const rankBadge = idx === 0 ? "🥇 1" : idx === 1 ? "🥈 2" : idx === 2 ? "🥉 3" : `${idx + 1}`;
+          const isSelf = state.user && (state.user.uid === t.uid || state.user.email === t.email);
+          const score = t.arcadeHighScore || 0;
+          const lvl = getArcadeLevelInfo(score);
+
+          const avatarThumbnail = t.photoURL ? `
+            <img src="${t.photoURL}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border border-teal-300 shadow-2xs flex-shrink-0" referrerpolicy="no-referrer">
+          ` : `
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-sky-500 text-white font-bold flex items-center justify-center text-xs flex-shrink-0 shadow-2xs">
+              ${(t.name || "ครู").charAt(0)}
+            </div>
+          `;
+
+          return `
+            <tr class="hover:bg-teal-50/50 transition ${isSelf ? "bg-teal-50/40" : ""}">
+              <td class="py-3 px-3 font-bold text-center text-slate-700">${rankBadge}</td>
+              <td class="py-3 px-3">
+                <div class="flex items-center gap-2.5">
+                  ${avatarThumbnail}
+                  <div class="min-w-0">
+                    <p class="font-bold text-slate-800 truncate">${t.name} ${isSelf ? '<span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-bold">คุณ</span>' : ''}</p>
+                    <p class="text-xs text-slate-500 truncate">${t.email}${t.school ? ` • ${t.school}` : ""}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3 px-3 text-center">
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${lvl.badgeClass}">
+                  ${lvl.badgeText}
+                </span>
+              </td>
+              <td class="py-3 px-3 text-center font-semibold text-slate-700">
+                ${(t.arcadePlays || 0).toLocaleString()} รอบ
+              </td>
+              <td class="py-3 px-3 text-center font-bold text-sky-700">
+                +${(t.arcadeBonusXp || 0).toLocaleString()} XP
+              </td>
+              <td class="py-3 px-3 text-right">
+                <span class="text-base font-extrabold text-teal-700">${score.toLocaleString()}</span>
+                <span class="text-xs text-slate-500">แต้ม</span>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // Also render Live Leaderboard in #view-arcade
+      renderArcadeLiveLeaderboard(gameRanked);
+    }
+
+    // Render Live Mini-Game Leaderboard inside Arcade View
+    function renderArcadeLiveLeaderboard(ranked) {
+      const liveTbody = document.getElementById("arcade-live-leaderboard-tbody");
+      if (!liveTbody) return;
+
+      const topList = ranked || [...state.allTeachers].sort((a, b) => (b.arcadeHighScore || 0) - (a.arcadeHighScore || 0));
+
+      if (topList.length === 0) {
+        liveTbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-6 text-center text-slate-400 text-xs">
+              ยังไม่มีผู้บันทึกสถิติ เริ่มเล่นเกมเพื่อเป็นแชมป์คนแรก!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      liveTbody.innerHTML = topList.slice(0, 10).map((t, idx) => {
+        const rankBadge = idx === 0 ? "🥇 1" : idx === 1 ? "🥈 2" : idx === 2 ? "🥉 3" : `${idx + 1}`;
+        const isSelf = state.user && (state.user.uid === t.uid || state.user.email === t.email);
+        const score = t.arcadeHighScore || 0;
+        const lvl = getArcadeLevelInfo(score);
+
+        return `
+          <tr class="hover:bg-sky-50/50 transition ${isSelf ? "bg-sky-50/40 font-bold" : ""}">
+            <td class="py-2.5 px-3 font-bold text-center text-slate-700">${rankBadge}</td>
+            <td class="py-2.5 px-3">
+              <span class="text-slate-800">${t.name}</span>
+              ${isSelf ? '<span class="text-[10px] bg-sky-100 text-sky-800 px-1.5 py-0.2 rounded ml-1 font-bold">คุณ</span>' : ''}
+            </td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold border ${lvl.badgeClass}">
+                ${lvl.badgeText}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 text-center text-slate-600">${t.arcadePlays || 0}</td>
+            <td class="py-2.5 px-3 text-right font-extrabold text-teal-700">${score.toLocaleString()}</td>
+          </tr>
+        `;
+      }).join("");
     }
 
     // View Switching
@@ -2543,6 +3427,8 @@
         renderReportView();
       } else if (tabName === "arcade") {
         resizeArcadeCanvas();
+        updateArcadeHud();
+        renderArcadeLiveLeaderboard();
       } else {
         arcadeRunning = false;
         if (arcadeAnimId) {
@@ -3012,17 +3898,19 @@
         rightBtn.addEventListener(evt, () => { moveRightPressed = false; });
       });
 
-      // Mouse/Touch drag inside arcade canvas
+      // Mouse/Touch drag inside arcade canvas (scaled for responsive Retina displays)
       arcadeCanvas.addEventListener("mousemove", (e) => {
         if (!arcadeRunning) return;
         const rect = arcadeCanvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
+        const scaleX = arcadeCanvas.width / (rect.width || 1);
+        const mx = (e.clientX - rect.left) * scaleX;
         playerX = Math.max(8, Math.min(arcadeCanvas.width - playerWidth - 8, mx - playerWidth / 2));
       });
       arcadeCanvas.addEventListener("touchmove", (e) => {
         if (!arcadeRunning || !e.touches[0]) return;
         const rect = arcadeCanvas.getBoundingClientRect();
-        const tx = e.touches[0].clientX - rect.left;
+        const scaleX = arcadeCanvas.width / (rect.width || 1);
+        const tx = (e.touches[0].clientX - rect.left) * scaleX;
         playerX = Math.max(8, Math.min(arcadeCanvas.width - playerWidth - 8, tx - playerWidth / 2));
       }, { passive: true });
 
