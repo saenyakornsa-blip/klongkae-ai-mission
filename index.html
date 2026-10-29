@@ -80,12 +80,18 @@
 
       <!-- User Profile / Gmail Login Controls -->
       <div class="flex flex-wrap items-center gap-2">
-        <div id="user-profile-pill" class="flex items-center gap-2 bg-sky-50 border border-sky-200 px-3 py-1 rounded-xl">
-          <span id="user-avatar-icon" class="text-base">👩‍🏫</span>
+        <div id="user-profile-pill" class="flex items-center gap-2 bg-sky-50 hover:bg-sky-100/80 border border-sky-200 px-3 py-1.5 rounded-xl cursor-pointer transition shadow-2xs group" title="คลิกเพื่อแก้ไขข้อมูลโพรไฟล์ (ชื่อ / ระดับชั้น / ตำแหน่ง)">
+          <div id="user-avatar-container" class="flex-shrink-0">
+            <span id="user-avatar-icon" class="text-base">👩‍🏫</span>
+          </div>
           <div class="text-left">
             <p id="user-display-name" class="text-xs font-bold text-slate-800 leading-tight">ยังไม่ได้เข้าสู่ระบบ (โหมดผู้เยี่ยมชม)</p>
             <p id="user-email-text" class="text-[10px] text-slate-500 leading-tight">เข้าสู่ระบบด้วย Gmail เพื่อบันทึกสถิติรายบุคคล</p>
           </div>
+          <span id="btn-edit-profile-hint" class="hidden text-[10px] font-bold bg-sky-200 text-sky-800 px-2 py-0.5 rounded-lg group-hover:bg-sky-300 transition flex items-center gap-1">
+            <span>✏️</span>
+            <span>แก้ไข</span>
+          </span>
         </div>
 
         <button id="btn-open-login" type="button" class="bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
@@ -656,19 +662,105 @@
           <input id="login-email-input" type="email" required placeholder="เช่น somsee.klongkae@gmail.com" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
         </div>
         <div>
-          <label for="login-role-input" class="block text-xs font-bold text-slate-700 mb-1">ระดับชั้น / กลุ่มสาระ / ตำแหน่ง</label>
-          <select id="login-role-input" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-sky-400">
-            <option value="ครูประจำชั้น ป.1 - ป.3">ครูประจำชั้น ป.1 - ป.3</option>
-            <option value="ครูประจำชั้น ป.4 - ป.6">ครูประจำชั้น ป.4 - ป.6</option>
-            <option value="ครูกลุ่มสาระคณิตศาสตร์ / วิทยาศาสตร์">ครูกลุ่มสาระคณิตศาสตร์ / วิทยาศาสตร์</option>
-            <option value="ครูกลุ่มสาระภาษาไทย / ภาษาอังกฤษ">ครูกลุ่มสาระภาษาไทย / ภาษาอังกฤษ</option>
-            <option value="ผู้บริหารสถานศึกษา / ฝ่ายวิชาการ">ผู้บริหารสถานศึกษา / ฝ่ายวิชาการ</option>
-            <option value="ศึกษานิเทศก์ (ศน.ศิราณี)">ศึกษานิเทศก์ (ศน.ศิราณี)</option>
-          </select>
+          <label for="login-role-input" class="block text-xs font-bold text-slate-700 mb-1">
+            ระดับชั้น / กลุ่มสาระ / ตำแหน่ง (พิมพ์ระบุได้เอง)
+          </label>
+          <input id="login-role-input" type="text" list="login-role-datalist" placeholder="เช่น ครูประจำชั้น ป.5, ครูกลุ่มสาระคณิตฯ, ศึกษานิเทศก์" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
+          <datalist id="login-role-datalist">
+            <option value="ครูประจำชั้น ป.1 - ป.3">
+            <option value="ครูประจำชั้น ป.4 - ป.6">
+            <option value="ครูปฐมวัย (อนุบาล 2 - 3)">
+            <option value="ครูกลุ่มสาระคณิตศาสตร์">
+            <option value="ครูกลุ่มสาระภาษาไทย">
+            <option value="ครูกลุ่มสาระภาษาอังกฤษ">
+            <option value="ครูกลุ่มสาระวิทยาศาสตร์และเทคโนโลยี">
+            <option value="ครูกลุ่มสาระสังคมศึกษาฯ">
+            <option value="หัวหน้างาน 4 ฝ่าย / ฝ่ายวิชาการ">
+            <option value="ผู้บริหารสถานศึกษา (ผู้อำนวยการโรงเรียน)">
+            <option value="ศึกษานิเทศก์ ศธจ.นครราชสีมา">
+            <option value="ศึกษานิเทศก์ สพป.นม. 5">
+          </datalist>
         </div>
         <button type="submit" class="w-full bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-sm transition">
           ✅ เข้าสู่ระบบและซิงค์สถิติ
         </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit User Profile (ชื่อ, ระดับชั้น, ตำแหน่ง, รูปโพรไฟล์) -->
+  <div id="profile-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-white border-2 border-sky-300 rounded-3xl max-w-md w-full p-6 shadow-2xl relative my-8">
+      <button id="btn-close-profile-modal" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-600 font-bold flex items-center justify-center">&times;</button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div id="profile-modal-avatar-container" class="relative">
+          <img id="profile-modal-avatar-img" src="" alt="Avatar" class="w-14 h-14 rounded-2xl object-cover border-2 border-sky-400 shadow-sm hidden" referrerpolicy="no-referrer">
+          <div id="profile-modal-avatar-fallback" class="w-14 h-14 rounded-2xl bg-sky-100 border border-sky-300 flex items-center justify-center text-3xl">
+            👩‍🏫
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-extrabold text-slate-800">แก้ไขข้อมูลโพรไฟล์คุณครู</h3>
+          <p id="profile-modal-email" class="text-xs text-slate-500 font-mono">user@gmail.com</p>
+        </div>
+      </div>
+
+      <form id="form-edit-profile" class="space-y-4">
+        <input type="hidden" id="profile-target-uid" value="">
+        <div>
+          <label for="profile-name-input" class="block text-xs font-bold text-slate-700 mb-1">
+            ชื่อ-นามสกุล (สำหรับพิมพ์ในใบรายงานผลราชการ)
+          </label>
+          <input id="profile-name-input" type="text" required placeholder="เช่น นายสมศักดิ์ สุขใจ" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
+        </div>
+
+        <div>
+          <label for="profile-role-input" class="block text-xs font-bold text-slate-700 mb-1">
+            ระดับชั้น / กลุ่มสาระ / ตำแหน่ง
+          </label>
+          <input id="profile-role-input" type="text" required list="role-suggestions" placeholder="พิมพ์ตำแหน่งหรือเลือกตัวเลือกด่วนด้านล่าง" class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
+          
+          <datalist id="role-suggestions">
+            <option value="ครูประจำชั้น ป.1 - ป.3">
+            <option value="ครูประจำชั้น ป.4 - ป.6">
+            <option value="ครูปฐมวัย (อนุบาล 2 - 3)">
+            <option value="ครูกลุ่มสาระคณิตศาสตร์">
+            <option value="ครูกลุ่มสาระภาษาไทย">
+            <option value="ครูกลุ่มสาระภาษาอังกฤษ">
+            <option value="ครูกลุ่มสาระวิทยาศาสตร์และเทคโนโลยี">
+            <option value="ครูกลุ่มสาระสังคมศึกษาฯ">
+            <option value="หัวหน้าฝ่ายบริหารงานวิชาการ">
+            <option value="หัวหน้าฝ่ายบริหารงานงบประมาณ">
+            <option value="หัวหน้าฝ่ายบริหารงานบุคคล">
+            <option value="หัวหน้าฝ่ายบริหารทั่วไป">
+            <option value="ผู้บริหารสถานศึกษา (ผู้อำนวยการโรงเรียน)">
+            <option value="ศึกษานิเทศก์ ศธจ.นครราชสีมา">
+            <option value="ศึกษานิเทศก์ สพป.นม. 5">
+          </datalist>
+
+          <!-- Quick Select Chips -->
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <span class="text-[11px] text-slate-500 font-semibold self-center mr-1">เลือกด่วน:</span>
+            <button type="button" onclick="setRoleInputValue('ครูประจำชั้น ป.1 - ป.3')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ป.1-ป.3</button>
+            <button type="button" onclick="setRoleInputValue('ครูประจำชั้น ป.4 - ป.6')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ป.4-ป.6</button>
+            <button type="button" onclick="setRoleInputValue('ครูปฐมวัย')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ปฐมวัย</button>
+            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระคณิตศาสตร์')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">คณิตศาสตร์</button>
+            <button type="button" onclick="setRoleInputValue('ครูกลุ่มสาระภาษาอังกฤษ')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ภาษาอังกฤษ</button>
+            <button type="button" onclick="setRoleInputValue('ศึกษานิเทศก์ ศธจ.นครราชสีมา')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ศึกษานิเทศก์</button>
+            <button type="button" onclick="setRoleInputValue('ผู้บริหารสถานศึกษา (ผู้อำนวยการโรงเรียน)')" class="text-[11px] bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 px-2 py-0.5 rounded-lg border border-slate-200 transition">ผอ.รร.</button>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+          <button id="btn-cancel-profile" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+            ยกเลิก
+          </button>
+          <button type="submit" class="bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
+            <span>💾</span>
+            <span>บันทึกข้อมูลโพรไฟล์</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -1054,6 +1146,7 @@
             uid: state.user.uid,
             name: state.user.name,
             email: state.user.email,
+            photoURL: state.user.photoURL || "",
             role: state.user.role || "ครูผู้สอน โรงเรียนบ้านคลองแค",
             completed: state.completed,
             quizSolved: state.quizSolved,
@@ -1082,6 +1175,7 @@
         uid: currentUid,
         name: currentName,
         email: currentEmail,
+        photoURL: (state.user && state.user.photoURL) || "",
         role: currentRole,
         completed: { ...state.completed },
         quizSolved: { ...state.quizSolved },
@@ -1103,17 +1197,32 @@
       const emailEl = document.getElementById("user-email-text");
       const loginBtnLabel = document.getElementById("btn-login-label");
       const logoutBtn = document.getElementById("btn-logout");
+      const avatarContainer = document.getElementById("user-avatar-container");
+      const editHint = document.getElementById("btn-edit-profile-hint");
 
       if (state.user) {
-        nameEl.innerText = `${state.user.name} (${state.user.role})`;
+        nameEl.innerText = `${state.user.name} (${state.user.role || "ระบุตำแหน่ง"})`;
         emailEl.innerText = `📧 ${state.user.email}`;
         loginBtnLabel.innerText = "สลับบัญชี Gmail";
         logoutBtn.classList.remove("hidden");
+        if (editHint) editHint.classList.remove("hidden");
+
+        if (avatarContainer) {
+          if (state.user.photoURL) {
+            avatarContainer.innerHTML = `<img src="${state.user.photoURL}" alt="${state.user.name}" class="w-8 h-8 rounded-full object-cover border-2 border-sky-300 shadow-2xs" referrerpolicy="no-referrer">`;
+          } else {
+            avatarContainer.innerHTML = `<span id="user-avatar-icon" class="text-base">👩‍🏫</span>`;
+          }
+        }
       } else {
         nameEl.innerText = "ยังไม่ได้เข้าสู่ระบบ (โหมดผู้เยี่ยมชม)";
         emailEl.innerText = "เข้าสู่ระบบด้วย Gmail เพื่อบันทึกสถิติรายบุคคล";
         loginBtnLabel.innerText = "ล็อกอินด้วย Gmail";
         logoutBtn.classList.add("hidden");
+        if (editHint) editHint.classList.add("hidden");
+        if (avatarContainer) {
+          avatarContainer.innerHTML = `<span id="user-avatar-icon" class="text-base">👩‍🏫</span>`;
+        }
       }
       updateAdminUiVisibility();
     }
@@ -1157,11 +1266,19 @@
         // Auto-restore Google Auth session and check Admin
         firebaseAuth.onAuthStateChanged(u => {
           if (u) {
+            const existing = state.allTeachers.find(t => t.uid === u.uid || (u.email && t.email === u.email));
+            const currentRole = (state.user && state.user.role && state.user.role !== "ครูผู้สอน โรงเรียนบ้านคลองแค") 
+              ? state.user.role 
+              : (existing && existing.role) || (state.user && state.user.role) || "ครูผู้สอน โรงเรียนบ้านคลองแค";
+            const currentName = (state.user && state.user.name) || u.displayName || (existing && existing.name) || "คุณครู";
+            const currentPhoto = u.photoURL || (state.user && state.user.photoURL) || (existing && existing.photoURL) || "";
+
             state.user = {
               uid: u.uid,
-              name: u.displayName || "คุณครูโรงเรียนบ้านคลองแค",
+              name: currentName,
               email: u.email || "",
-              role: (state.user && state.user.role) || "ครูผู้สอน โรงเรียนบ้านคลองแค"
+              photoURL: currentPhoto,
+              role: currentRole
             };
             saveState();
             updateAuthUi();
@@ -1660,14 +1777,54 @@
               </button>
             </td>
           ` : "";
+          const isSelf = state.user && (state.user.uid === t.uid || state.user.email === t.email);
+          const editSelfBtn = (isSelf && !isAdmin) ? `
+            <button type="button" onclick="openProfileModal('${t.uid}')" class="text-[10px] bg-sky-100 hover:bg-sky-200 text-sky-700 px-1.5 py-0.5 rounded-md font-bold transition ml-1 inline-flex items-center gap-0.5" title="แก้ไขระดับชั้น/ตำแหน่ง">
+              <span>✏️</span><span>แก้</span>
+            </button>
+          ` : "";
+
+          const adminButtons = isAdmin ? `
+            <td class="py-3 px-3 text-center whitespace-nowrap">
+              <div class="inline-flex items-center gap-1.5">
+                <button type="button" onclick="openProfileModal('${t.uid}')" class="bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="แก้ไขชื่อ/ตำแหน่ง">
+                  <span>✏️</span><span>แก้</span>
+                </button>
+                <button type="button" onclick="deleteTeacherRecord('${t.uid}', '${(t.name || "").replace(/'/g, "\\'")}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="ลบข้อมูลของครูท่านนี้">
+                  <span>🗑️</span><span>ลบ</span>
+                </button>
+              </div>
+            </td>
+          ` : "";
+
+          const avatarThumbnail = t.photoURL ? `
+            <img src="${t.photoURL}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border border-sky-300 shadow-2xs flex-shrink-0" referrerpolicy="no-referrer">
+          ` : `
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-teal-500 text-white font-bold flex items-center justify-center text-xs flex-shrink-0 shadow-2xs">
+              ${(t.name || "ครู").charAt(0)}
+            </div>
+          `;
+
           return `
-            <tr class="hover:bg-sky-50/60 transition">
+            <tr class="hover:bg-sky-50/60 transition ${isSelf ? "bg-sky-50/40" : ""}">
               <td class="py-3 px-3 font-bold text-slate-700">${rankBadge}</td>
               <td class="py-3 px-3">
-                <p class="font-bold text-slate-800">${t.name}</p>
-                <p class="text-xs text-slate-500">${t.email}</p>
+                <div class="flex items-center gap-2.5">
+                  ${avatarThumbnail}
+                  <div class="min-w-0">
+                    <p class="font-bold text-slate-800 truncate">${t.name}</p>
+                    <p class="text-xs text-slate-500 truncate">${t.email}</p>
+                  </div>
+                </div>
               </td>
-              <td class="py-3 px-3 text-xs text-slate-600">${t.role || "ครูผู้สอน"}</td>
+              <td class="py-3 px-3 text-xs">
+                <div class="inline-flex items-center gap-1 flex-wrap">
+                  <span class="inline-block bg-slate-100 text-slate-800 px-2 py-1 rounded-md border border-slate-200 font-medium">
+                    ${t.role || "ครูผู้สอน"}
+                  </span>
+                  ${editSelfBtn}
+                </div>
+              </td>
               <td class="py-3 px-3 text-center font-semibold text-amber-800">${t.mDone}/5</td>
               <td class="py-3 px-3 text-center font-semibold text-pink-800">${t.sDone}/1</td>
               <td class="py-3 px-3 text-center font-semibold text-sky-800">${t.aDone}/4</td>
@@ -1675,7 +1832,7 @@
                 <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full">${t.totalDone}/10</span>
               </td>
               <td class="py-3 px-3 text-right font-extrabold text-teal-700">${t.xp.toLocaleString()} XP</td>
-              ${adminTd}
+              ${adminButtons}
             </tr>
           `;
         }).join("");
@@ -2232,6 +2389,55 @@
       }
     }
 
+    // Profile Management Functions
+    window.setRoleInputValue = function (val) {
+      const input = document.getElementById("profile-role-input");
+      if (input) {
+        input.value = val;
+        input.focus();
+      }
+    };
+
+    window.openProfileModal = function (targetUid) {
+      const modal = document.getElementById("profile-modal");
+      let targetUser = state.user;
+      const isAdmin = checkIsAdmin();
+
+      if (targetUid && isAdmin) {
+        const found = state.allTeachers.find(t => t.uid === targetUid);
+        if (found) targetUser = found;
+      }
+
+      if (!targetUser) {
+        document.getElementById("login-modal").classList.remove("hidden");
+        return;
+      }
+
+      document.getElementById("profile-target-uid").value = targetUser.uid;
+      document.getElementById("profile-name-input").value = targetUser.name || "";
+      document.getElementById("profile-email-display") ? document.getElementById("profile-email-display").innerText = targetUser.email || "" : null;
+      document.getElementById("profile-modal-email").innerText = targetUser.email || "";
+      document.getElementById("profile-role-input").value = targetUser.role || "";
+
+      const avatarImg = document.getElementById("profile-modal-avatar-img");
+      const avatarFallback = document.getElementById("profile-modal-avatar-fallback");
+      if (targetUser.photoURL) {
+        avatarImg.src = targetUser.photoURL;
+        avatarImg.classList.remove("hidden");
+        avatarFallback.classList.add("hidden");
+      } else {
+        avatarImg.classList.add("hidden");
+        avatarFallback.classList.remove("hidden");
+      }
+
+      modal.classList.remove("hidden");
+      playTone("click");
+    };
+
+    window.closeProfileModal = function () {
+      document.getElementById("profile-modal").classList.add("hidden");
+    };
+
     // Event Listeners Setup
     window.onload = function () {
       loadState();
@@ -2246,15 +2452,75 @@
       document.getElementById("tab-arcade").addEventListener("click", () => switchTab("arcade"));
       document.getElementById("tab-badges").addEventListener("click", () => switchTab("badges"));
 
-      // Login & Firebase Modals
+      // Login, Profile & Firebase Modals
       const loginModal = document.getElementById("login-modal");
       const fbModal = document.getElementById("firebase-config-modal");
+      const profModal = document.getElementById("profile-modal");
+
+      // Profile Pill Click -> Open Profile Modal (or Login if guest)
+      document.getElementById("user-profile-pill").addEventListener("click", () => {
+        if (state.user) {
+          openProfileModal();
+        } else {
+          loginModal.classList.remove("hidden");
+        }
+      });
+
+      document.getElementById("btn-close-profile-modal").addEventListener("click", closeProfileModal);
+      document.getElementById("btn-cancel-profile").addEventListener("click", closeProfileModal);
+
+      // Form Edit Profile Submit
+      document.getElementById("form-edit-profile").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const targetUid = document.getElementById("profile-target-uid").value;
+        const newName = document.getElementById("profile-name-input").value.trim();
+        const newRole = document.getElementById("profile-role-input").value.trim();
+        if (!newName || !newRole) return;
+
+        const isSelf = state.user && state.user.uid === targetUid;
+        if (isSelf) {
+          state.user.name = newName;
+          state.user.role = newRole;
+        }
+
+        // Update in state.allTeachers
+        const idx = state.allTeachers.findIndex(t => t.uid === targetUid);
+        if (idx >= 0) {
+          state.allTeachers[idx].name = newName;
+          state.allTeachers[idx].role = newRole;
+        }
+
+        // Save to Firestore if connected
+        if (state.firebaseConnected && firestoreDb) {
+          try {
+            await firestoreDb.collection("klongkae_teachers").doc(targetUid).set({
+              name: newName,
+              role: newRole,
+              updatedAt: new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น."
+            }, { merge: true });
+            state.dbWrites += 1;
+            const writesEl = document.getElementById("stat-writes");
+            if (writesEl) writesEl.innerText = state.dbWrites;
+          } catch (err) {
+            console.error("Error updating profile in Firestore:", err);
+          }
+        }
+
+        saveState();
+        updateAuthUi();
+        renderStatsView();
+        renderReportView();
+        closeProfileModal();
+        playTone("success");
+        showToast("✅", "อัปเดตโพรไฟล์สำเร็จ!", `บันทึกข้อมูล "${newName}" (${newRole}) เรียบร้อยแล้ว`);
+      });
 
       document.getElementById("btn-open-login").addEventListener("click", () => {
         playTone("click");
         if (state.user) {
           document.getElementById("login-name-input").value = state.user.name || "";
           document.getElementById("login-email-input").value = state.user.email || "";
+          document.getElementById("login-role-input").value = state.user.role || "";
         }
         loginModal.classList.remove("hidden");
       });
@@ -2271,11 +2537,17 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             const result = await firebaseAuth.signInWithPopup(provider);
             if (result && result.user) {
+              const gUser = result.user;
+              const inputRole = document.getElementById("login-role-input").value.trim();
+              const existing = state.allTeachers.find(t => t.uid === gUser.uid || t.email === gUser.email);
+              const finalRole = inputRole || (existing && existing.role) || "ครูผู้สอน โรงเรียนบ้านคลองแค";
+
               state.user = {
-                uid: result.user.uid,
-                name: result.user.displayName || "คุณครูโรงเรียนบ้านคลองแค",
-                email: result.user.email || "teacher@gmail.com",
-                role: document.getElementById("login-role-input").value || "ครูผู้สอน"
+                uid: gUser.uid,
+                name: gUser.displayName || (existing && existing.name) || "คุณครู",
+                email: gUser.email || "",
+                photoURL: gUser.photoURL || "",
+                role: finalRole
               };
               saveState();
               updateAuthUi();
@@ -2283,6 +2555,14 @@
               loginModal.classList.add("hidden");
               playTone("success");
               showToast("🔑", "ล็อกอินด้วย Google สำเร็จ!", `ยินดีต้อนรับ ${state.user.name}`);
+
+              // If user hasn't specified a specific role or still default, open profile modal to prompt
+              if (!inputRole && (!existing || !existing.role || existing.role === "ครูผู้สอน โรงเรียนบ้านคลองแค")) {
+                setTimeout(() => {
+                  openProfileModal();
+                  showToast("📝", "กรุณาระบุระดับชั้น / ตำแหน่ง", "พิมพ์ระบุระดับชั้นและตำแหน่งของท่านเพื่อแสดงในตารางและใบรายงานผล");
+                }, 500);
+              }
               return;
             }
           } catch (err) {
@@ -2299,13 +2579,14 @@
         e.preventDefault();
         const name = document.getElementById("login-name-input").value.trim();
         const email = document.getElementById("login-email-input").value.trim().toLowerCase();
-        const role = document.getElementById("login-role-input").value;
+        const role = document.getElementById("login-role-input").value.trim() || "ครูผู้สอน โรงเรียนบ้านคลองแค";
         if (!name || !email) return;
 
         state.user = {
           uid: "gmail_" + email.replace(/[^a-z0-9]/g, "_"),
           name: name,
           email: email,
+          photoURL: "",
           role: role
         };
         saveState();
