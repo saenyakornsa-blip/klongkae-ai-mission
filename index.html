@@ -1045,16 +1045,27 @@
       }
     }
 
-    // Initialize Firebase if config is saved in localStorage
+    // Default Production Firebase Configuration (klongkae-ai-mission)
+    const DEFAULT_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAPBmEZbLUpj53g_rcr7n9G8joh9AtLEiQ",
+      authDomain: "klongkae-ai-mission.firebaseapp.com",
+      projectId: "klongkae-ai-mission",
+      storageBucket: "klongkae-ai-mission.firebasestorage.app",
+      messagingSenderId: "856823047903",
+      appId: "1:856823047903:web:9dd02e41eafcdf6dbceb6a",
+      measurementId: "G-9L4HNZRN86"
+    };
+
+    // Initialize Firebase using embedded config or custom saved config in localStorage
     function initFirebaseFromStorage() {
       try {
         const rawCfg = localStorage.getItem("klongkae_firebase_config");
-        if (!rawCfg) return;
-        const cfg = JSON.parse(rawCfg);
+        const cfg = rawCfg ? JSON.parse(rawCfg) : DEFAULT_FIREBASE_CONFIG;
         document.getElementById("firebase-config-textarea").value = JSON.stringify(cfg, null, 2);
         connectFirebase(cfg, false);
       } catch (e) {
-        // Ignore invalid config
+        document.getElementById("firebase-config-textarea").value = JSON.stringify(DEFAULT_FIREBASE_CONFIG, null, 2);
+        connectFirebase(DEFAULT_FIREBASE_CONFIG, false);
       }
     }
 
