@@ -73,7 +73,7 @@
           <span id="db-status-dot" class="w-2 h-2 rounded-full bg-amber-500"></span>
           <span id="db-mode-text">โหมดฐานข้อมูลจำลอง (พร้อมเชื่อม Firebase Free Tier)</span>
         </span>
-        <span id="quota-counter-badge" class="text-[11px] text-slate-500 font-medium hidden sm:inline">
+        <span id="quota-counter-badge" class="text-[11px] text-slate-500 font-medium hidden">
           ประหยัดโควตา Free Tier: อ่าน <strong id="stat-reads">1</strong> / เขียน <strong id="stat-writes">0</strong> ครั้ง
         </span>
       </div>
@@ -97,7 +97,7 @@
           🚪 ออกจากระบบ
         </button>
 
-        <button id="btn-open-firebase-config" type="button" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm" title="ตั้งค่าการเชื่อมต่อ Firebase Free Tier">
+        <button id="btn-open-firebase-config" type="button" class="hidden bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm" title="ตั้งค่าการเชื่อมต่อ Firebase Free Tier (เฉพาะ Admin)">
           <span>⚙️</span>
           <span class="hidden md:inline">ตั้งค่า Firebase</span>
         </button>
@@ -268,7 +268,7 @@
             <span>☁️</span>
             <span>ซิงค์ข้อมูลล่าสุด</span>
           </button>
-          <button id="btn-add-demo-teacher" type="button" class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+          <button id="btn-add-demo-teacher" type="button" class="hidden bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
             <span>➕</span>
             <span>จำลองข้อมูลเพื่อนครู (+1 คน)</span>
           </button>
@@ -331,7 +331,8 @@
               <th class="py-2.5 px-3 font-bold text-center">ช่วงสาย (1)</th>
               <th class="py-2.5 px-3 font-bold text-center">ช่วงบ่าย (4)</th>
               <th class="py-2.5 px-3 font-bold text-center">รวมภารกิจ</th>
-              <th class="py-2.5 px-3 font-bold text-right rounded-tr-xl">คะแนน XP</th>
+              <th id="th-xp-col" class="py-2.5 px-3 font-bold text-right rounded-tr-xl">คะแนน XP</th>
+              <th id="th-admin-actions" class="py-2.5 px-3 font-bold text-center rounded-tr-xl hidden">จัดการ (Admin)</th>
             </tr>
           </thead>
           <tbody id="stats-leaderboard-tbody" class="divide-y divide-slate-200"></tbody>
@@ -914,6 +915,45 @@
       }
     ];
 
+    // Admin Configuration & Role-Based Access Control
+    const ADMIN_EMAIL = "saenyakorn.sa@gmail.com";
+
+    function checkIsAdmin() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasAdminParam = urlParams.get("admin") === "1";
+        const isUserAdmin = Boolean(state.user && state.user.email === ADMIN_EMAIL);
+        return hasAdminParam || isUserAdmin;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function updateAdminUiVisibility() {
+      const isAdmin = checkIsAdmin();
+
+      const fbConfigBtn = document.getElementById("btn-open-firebase-config");
+      if (fbConfigBtn) fbConfigBtn.classList.toggle("hidden", !isAdmin);
+
+      const quotaBadge = document.getElementById("quota-counter-badge");
+      if (quotaBadge) quotaBadge.classList.toggle("hidden", !isAdmin);
+
+      const addDemoBtn = document.getElementById("btn-add-demo-teacher");
+      if (addDemoBtn) addDemoBtn.classList.toggle("hidden", !isAdmin);
+
+      const thAdmin = document.getElementById("th-admin-actions");
+      const thXp = document.getElementById("th-xp-col");
+      if (thAdmin && thXp) {
+        if (isAdmin) {
+          thAdmin.classList.remove("hidden");
+          thXp.classList.remove("rounded-tr-xl");
+        } else {
+          thAdmin.classList.add("hidden");
+          thXp.classList.add("rounded-tr-xl");
+        }
+      }
+    }
+
     // Game & Cloud State
     let state = {
       user: null, // { uid, name, email, role }
@@ -936,6 +976,34 @@
     let firebaseAuth = null;
     let barChartInstance = null;
     let doughnutChartInstance = null;
+
+        // Admin Action: Delete teacher record directly from Firestore
+    window.deleteTeacherRecord = async function(uid, name) {
+      if (!checkIsAdmin()) {
+        showToast("⚠️", "ไม่มีสิทธิ์ดำเนินการ", "เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถลบข้อมูลได้");
+        return;
+      }
+      if (!confirm(`คุณต้องการลบข้อมูลสถิติของ "${name}" ออกจากระบบและ Cloud Firestore หรือไม่?`)) {
+        return;
+      }
+      try {
+        if (state.firebaseConnected && firestoreDb) {
+          await firestoreDb.collection("klongkae_teachers").doc(uid).delete();
+          state.dbWrites += 1;
+          const writesEl = document.getElementById("stat-writes");
+          if (writesEl) writesEl.innerText = state.dbWrites;
+        }
+        state.allTeachers = state.allTeachers.filter(t => t.uid !== uid);
+        saveState();
+        renderStatsView();
+        renderReportView();
+        playTone("click");
+        showToast("🗑️", "ลบข้อมูลสำเร็จ", `ลบข้อมูลของ ${name} เรียบร้อยแล้ว`);
+      } catch (err) {
+        console.error("Error deleting doc:", err);
+        showToast("⚠️", "เกิดข้อผิดพลาดในการลบ", err.message || "ไม่สามารถลบข้อมูลได้");
+      }
+    };
 
     // Load saved progress safely
     function loadState() {
@@ -1000,6 +1068,10 @@
     }
 
     function syncCurrentUserIntoTeachersList() {
+      // Production Data Purity: ถ้าเชื่อมต่อ Cloud Firestore แล้วและยังไม่ได้ล็อกอิน ไม่ใส่ข้อมูล Guest ปนในระบบ
+      if (!state.user && state.firebaseConnected) {
+        return;
+      }
       const currentUid = state.user ? state.user.uid : "current_local_user";
       const currentName = state.user ? state.user.name : "คุณครู (เครื่องปัจจุบัน)";
       const currentEmail = state.user ? state.user.email : "guest.klongkae@gmail.com";
@@ -1043,6 +1115,7 @@
         loginBtnLabel.innerText = "ล็อกอินด้วย Gmail";
         logoutBtn.classList.add("hidden");
       }
+      updateAdminUiVisibility();
     }
 
     // Default Production Firebase Configuration (klongkae-ai-mission)
@@ -1081,6 +1154,25 @@
         firestoreDb = firebase.firestore();
         state.firebaseConnected = true;
 
+        // Auto-restore Google Auth session and check Admin
+        firebaseAuth.onAuthStateChanged(u => {
+          if (u) {
+            state.user = {
+              uid: u.uid,
+              name: u.displayName || "คุณครูโรงเรียนบ้านคลองแค",
+              email: u.email || "",
+              role: (state.user && state.user.role) || "ครูผู้สอน โรงเรียนบ้านคลองแค"
+            };
+            saveState();
+            updateAuthUi();
+            syncCurrentUserIntoTeachersList();
+            renderStatsView();
+            renderReportView();
+          } else {
+            updateAdminUiVisibility();
+          }
+        });
+
         const badge = document.getElementById("db-mode-badge");
         const dot = document.getElementById("db-status-dot");
         const txt = document.getElementById("db-mode-text");
@@ -1096,12 +1188,12 @@
 
           const docs = [];
           snapshot.forEach(doc => docs.push(doc.data()));
-          if (docs.length > 0) {
-            state.allTeachers = docs;
-            syncCurrentUserIntoTeachersList();
-            renderStatsView();
-            renderReportView();
-          }
+          // Production Data Purity: เมื่อเชื่อมต่อ Firestore แล้ว ให้แสดงเฉพาะข้อมูลจริงจาก Firestore
+          // ตัดข้อมูลตัวอย่าง defaultSchoolTeachers ออกทั้งหมด
+          state.allTeachers = docs;
+          syncCurrentUserIntoTeachersList();
+          renderStatsView();
+          renderReportView();
         });
 
         if (notifyUser) {
@@ -1544,26 +1636,50 @@
 
       // Render Leaderboard Table
       const tbody = document.getElementById("stats-leaderboard-tbody");
-      tbody.innerHTML = enrichedTeachers.map((t, idx) => {
-        const rankBadge = idx === 0 ? "🥇 1" : idx === 1 ? "🥈 2" : idx === 2 ? "🥉 3" : `${idx + 1}`;
-        return `
-          <tr class="hover:bg-sky-50/60 transition">
-            <td class="py-3 px-3 font-bold text-slate-700">${rankBadge}</td>
-            <td class="py-3 px-3">
-              <p class="font-bold text-slate-800">${t.name}</p>
-              <p class="text-xs text-slate-500">${t.email}</p>
+      const isAdmin = checkIsAdmin();
+      updateAdminUiVisibility();
+
+      if (enrichedTeachers.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="${isAdmin ? 9 : 8}" class="py-8 text-center text-slate-400">
+              <p class="text-2xl mb-1">📋</p>
+              <p class="text-sm font-medium">ยังไม่มีข้อมูลคุณครูในระบบ</p>
+              <p class="text-xs text-slate-400 mt-0.5">ล็อกอินด้วยบัญชี Gmail เพื่อเริ่มพิชิตภารกิจและแสดงสถิติที่นี่</p>
             </td>
-            <td class="py-3 px-3 text-xs text-slate-600">${t.role || "ครูผู้สอน"}</td>
-            <td class="py-3 px-3 text-center font-semibold text-amber-800">${t.mDone}/5</td>
-            <td class="py-3 px-3 text-center font-semibold text-pink-800">${t.sDone}/1</td>
-            <td class="py-3 px-3 text-center font-semibold text-sky-800">${t.aDone}/4</td>
-            <td class="py-3 px-3 text-center">
-              <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full">${t.totalDone}/10</span>
-            </td>
-            <td class="py-3 px-3 text-right font-extrabold text-teal-700">${t.xp.toLocaleString()} XP</td>
           </tr>
         `;
-      }).join("");
+      } else {
+        tbody.innerHTML = enrichedTeachers.map((t, idx) => {
+          const rankBadge = idx === 0 ? "🥇 1" : idx === 1 ? "🥈 2" : idx === 2 ? "🥉 3" : `${idx + 1}`;
+          const adminTd = isAdmin ? `
+            <td class="py-3 px-3 text-center">
+              <button type="button" onclick="deleteTeacherRecord('${t.uid}', '${(t.name || "").replace(/'/g, "\\'")}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-2.5 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="ลบข้อมูลของครูท่านนี้">
+                <span>🗑️</span>
+                <span>ลบ</span>
+              </button>
+            </td>
+          ` : "";
+          return `
+            <tr class="hover:bg-sky-50/60 transition">
+              <td class="py-3 px-3 font-bold text-slate-700">${rankBadge}</td>
+              <td class="py-3 px-3">
+                <p class="font-bold text-slate-800">${t.name}</p>
+                <p class="text-xs text-slate-500">${t.email}</p>
+              </td>
+              <td class="py-3 px-3 text-xs text-slate-600">${t.role || "ครูผู้สอน"}</td>
+              <td class="py-3 px-3 text-center font-semibold text-amber-800">${t.mDone}/5</td>
+              <td class="py-3 px-3 text-center font-semibold text-pink-800">${t.sDone}/1</td>
+              <td class="py-3 px-3 text-center font-semibold text-sky-800">${t.aDone}/4</td>
+              <td class="py-3 px-3 text-center">
+                <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full">${t.totalDone}/10</span>
+              </td>
+              <td class="py-3 px-3 text-right font-extrabold text-teal-700">${t.xp.toLocaleString()} XP</td>
+              ${adminTd}
+            </tr>
+          `;
+        }).join("");
+      }
 
       // Update Charts if Chart.js is loaded
       if (window.Chart) {

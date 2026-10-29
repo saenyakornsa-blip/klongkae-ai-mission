@@ -1,10 +1,21 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // คอลเลกชันเก็บสถิติและรายงานผลของครูโรงเรียนบ้านคลองแค
+    // คอลเลกชันเก็บสถิติและรายงานผลของครูโรงเรียนบ้านคลองแค (Klongkae 10 Missions)
     match /klongkae_teachers/{teacherId} {
+      // 1. อนุญาตให้อ่านสถิติและรายงานผลได้ทั่วไป (สำหรับแดชบอร์ดและรายงานราชการ One-Page Report)
       allow read: if true;
-      allow write: if request.auth != null || true;
+      
+      // 2. อนุญาตให้สร้างหรืออัปเดตข้อมูล:
+      // - คุณครูที่ล็อกอินด้วยบัญชี Gmail สามารถบันทึกเฉพาะเอกสารที่เป็น UID ของตนเองได้
+      // - หรือผู้ดูแลระบบ (Admin) saenyakorn.sa@gmail.com สามารถบันทึก/แก้ไขได้ทุกเอกสาร
+      allow create, update: if request.auth != null && (
+        request.auth.uid == teacherId || 
+        request.auth.token.email == 'saenyakorn.sa@gmail.com'
+      );
+      
+      // 3. อนุญาตให้เฉพาะผู้ดูแลระบบ (Admin) ลบข้อมูลสถิติหรือข้อมูลทดสอบได้
+      allow delete: if request.auth != null && request.auth.token.email == 'saenyakorn.sa@gmail.com';
     }
   }
 }
