@@ -103,6 +103,11 @@
           🚪 ออกจากระบบ
         </button>
 
+        <button id="btn-open-user-management" type="button" class="hidden bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-2xs" title="ระบบบริหารจัดการบัญชีผู้ใช้ (เฉพาะ Admin)">
+          <span>👥</span>
+          <span class="hidden md:inline">จัดการผู้ใช้</span>
+        </button>
+
         <button id="btn-open-firebase-config" type="button" class="hidden bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm" title="ตั้งค่าการเชื่อมต่อ Firebase Free Tier (เฉพาะ Admin)">
           <span>⚙️</span>
           <span class="hidden md:inline">ตั้งค่า Firebase</span>
@@ -277,6 +282,10 @@
           <button id="btn-add-demo-teacher" type="button" class="hidden bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
             <span>➕</span>
             <span>จำลองข้อมูลเพื่อนครู (+1 คน)</span>
+          </button>
+          <button id="btn-stats-user-mgmt" type="button" class="hidden bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-2xs">
+            <span>👥</span>
+            <span>จัดการบัญชีผู้ใช้</span>
           </button>
         </div>
       </div>
@@ -1040,6 +1049,94 @@
     </div>
   </div>
 
+  <!-- Modal: User Management Console (เฉพาะ Admin) -->
+  <div id="user-management-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="relative bg-white w-full max-w-5xl rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col">
+      <button id="btn-close-user-management" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 text-lg font-bold flex items-center justify-center transition">&times;</button>
+      
+      <!-- Modal Header -->
+      <div class="flex items-center gap-3 border-b border-slate-200 pb-3 mb-4">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl flex-shrink-0 shadow-2xs">
+          👥
+        </div>
+        <div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+            ระบบบริหารจัดการบัญชีผู้ใช้ (User Management Console)
+            <span class="text-[11px] bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full font-bold">Admin Only</span>
+          </h3>
+          <p class="text-xs text-slate-500">จัดการข้อมูลผู้ใช้ รีเซ็ตคะแนน พักการใช้งาน หรือลบบัญชีและสถิติใน Cloud Firestore</p>
+        </div>
+      </div>
+
+      <!-- Summary Metrics Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div class="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-3">
+          <p class="text-[11px] font-bold text-indigo-800">👥 ผู้ใช้ทั้งหมด</p>
+          <p id="mgmt-stat-total" class="text-xl font-extrabold text-slate-800 mt-0.5">0 คน</p>
+        </div>
+        <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3">
+          <p class="text-[11px] font-bold text-emerald-800">🟢 ใช้งานปกติ (Active)</p>
+          <p id="mgmt-stat-active" class="text-xl font-extrabold text-slate-800 mt-0.5">0 คน</p>
+        </div>
+        <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-3">
+          <p class="text-[11px] font-bold text-amber-800">⏸️ พักการใช้งาน (Suspended)</p>
+          <p id="mgmt-stat-suspended" class="text-xl font-extrabold text-slate-800 mt-0.5">0 คน</p>
+        </div>
+        <div class="bg-sky-50/70 border border-sky-200 rounded-2xl p-3">
+          <p class="text-[11px] font-bold text-sky-800">⚡ คะแนนรวมทั้งระบบ</p>
+          <p id="mgmt-stat-xp" class="text-xl font-extrabold text-sky-700 mt-0.5">0 XP</p>
+        </div>
+      </div>
+
+      <!-- Filter & Search Toolbar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
+        <div class="relative flex-1 max-w-sm">
+          <input id="mgmt-search-input" type="text" placeholder="🔍 ค้นหาชื่อ, บัญชี Gmail หรือโรงเรียน..." class="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div class="flex items-center gap-1.5">
+          <div class="bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs flex">
+            <button id="btn-mgmt-filter-all" type="button" class="px-2.5 py-1 rounded-lg font-bold bg-white text-indigo-700 shadow-2xs">ทั้งหมด</button>
+            <button id="btn-mgmt-filter-active" type="button" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900">🟢 ปกติ</button>
+            <button id="btn-mgmt-filter-suspended" type="button" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900">⏸️ พัก</button>
+          </div>
+          <button id="btn-mgmt-refresh" type="button" class="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
+            <span>🔄</span><span>รีเฟรช</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Table (Scrollable) -->
+      <div class="flex-1 overflow-y-auto border border-slate-200 rounded-2xl">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead class="bg-slate-50 text-slate-700 sticky top-0 border-b border-slate-200 z-10">
+            <tr>
+              <th class="py-2.5 px-3 font-bold">คุณครู / บัญชี Gmail</th>
+              <th class="py-2.5 px-3 font-bold">ระดับชั้น & สถานศึกษา</th>
+              <th class="py-2.5 px-3 font-bold text-center">สถานะ</th>
+              <th class="py-2.5 px-3 font-bold text-center">ภารกิจที่พิชิต</th>
+              <th class="py-2.5 px-3 font-bold text-right">คะแนน XP</th>
+              <th class="py-2.5 px-3 font-bold text-center">คำสั่งจัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="user-mgmt-tbody" class="divide-y divide-slate-100">
+            <!-- Rendered dynamically via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 mt-3 border-t border-slate-200 text-[11px] text-slate-500">
+        <div class="flex items-center gap-1.5">
+          <span>🛡️</span>
+          <span>ระบบความปลอดภัย: ผู้ดูแลระบบหลัก (Admin) ไม่สามารถลบหรือระงับบัญชีของตนเองได้</span>
+        </div>
+        <button id="btn-close-user-management-footer" type="button" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition self-end">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Mission Cards Data (Preserving all 10 Klongkae Missions + Adding bright theme & mini-quiz)
     const cards = [
@@ -1304,6 +1401,12 @@
       const addDemoBtn = document.getElementById("btn-add-demo-teacher");
       if (addDemoBtn) addDemoBtn.classList.toggle("hidden", !isAdmin);
 
+      const userMgmtBtn = document.getElementById("btn-open-user-management");
+      if (userMgmtBtn) userMgmtBtn.classList.toggle("hidden", !isAdmin);
+
+      const statsUserMgmtBtn = document.getElementById("btn-stats-user-mgmt");
+      if (statsUserMgmtBtn) statsUserMgmtBtn.classList.toggle("hidden", !isAdmin);
+
       const thAdmin = document.getElementById("th-admin-actions");
       const thXp = document.getElementById("th-xp-col");
       if (thAdmin && thXp) {
@@ -1343,15 +1446,29 @@
     let barChartInstance = null;
     let doughnutChartInstance = null;
 
-        // Admin Action: Delete teacher record directly from Firestore
+        // ==========================================
+    // ADMIN ACTIONS & USER MANAGEMENT CONSOLE
+    // ==========================================
+
+    let currentMgmtSearch = "";
+    let currentMgmtStatusFilter = "all";
+
+    // 1. Delete teacher record with Self-Protection Guardrail
     window.deleteTeacherRecord = async function(uid, name) {
       if (!checkIsAdmin()) {
         showToast("⚠️", "ไม่มีสิทธิ์ดำเนินการ", "เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถลบข้อมูลได้");
         return;
       }
-      if (!confirm(`คุณต้องการลบข้อมูลสถิติของ "${name}" ออกจากระบบและ Cloud Firestore หรือไม่?`)) {
+      // Self-Protection Guardrail: Cannot delete current admin
+      if (state.user && (state.user.uid === uid || (state.user.email && state.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && (uid === state.user.uid || (name && name.includes(ADMIN_EMAIL)))))) {
+        showToast("🛡️", "ระบบความปลอดภัย", "ไม่สามารถลบบัญชีของผู้ดูแลระบบหลักได้");
         return;
       }
+
+      if (!confirm(`คุณต้องการลบข้อมูลและสถิติของ "${name}" ออกจากระบบและ Cloud Firestore อย่างถาวรหรือไม่?\n\n(การดำเนินการนี้ไม่สามารถยกเลิกได้)`)) {
+        return;
+      }
+
       try {
         if (state.firebaseConnected && firestoreDb) {
           await firestoreDb.collection("klongkae_teachers").doc(uid).delete();
@@ -1359,16 +1476,313 @@
           const writesEl = document.getElementById("stat-writes");
           if (writesEl) writesEl.innerText = state.dbWrites;
         }
+
+        // Clean removal from memory without re-triggering saveState self-healing
         state.allTeachers = state.allTeachers.filter(t => t.uid !== uid);
+
+        try {
+          localStorage.setItem("klongkae_mission_bright_v2", JSON.stringify({
+            user: state.user,
+            completed: state.completed,
+            quizSolved: state.quizSolved,
+            notes: state.notes,
+            arcadeBonusXp: state.arcadeBonusXp,
+            arcadeHighScore: state.arcadeHighScore,
+            arcadeMaxLevel: state.arcadeMaxLevel,
+            arcadePlays: state.arcadePlays,
+            allTeachers: state.allTeachers
+          }));
+        } catch (e) {}
+
+        renderStatsView();
+        renderReportView();
+        renderUserManagementTable();
+        playTone("click");
+        showToast("🗑️", "ลบข้อมูลสำเร็จ", `ลบบัญชีและข้อมูลของ ${name} เรียบร้อยแล้ว`);
+      } catch (err) {
+        console.error("Error deleting doc:", err);
+        const errMsg = (err.code === "permission-denied" || (err.message && err.message.includes("permission")))
+          ? "สิทธิ์บน Firebase ไม่เพียงพอ กรุณาตรวจสอบว่าได้ตั้งค่า Security Rules ให้ Admin ลบข้อมูลได้แล้ว"
+          : (err.message || "ไม่สามารถลบข้อมูลได้");
+        showToast("⚠️", "เกิดข้อผิดพลาดในการลบ", errMsg);
+      }
+    };
+
+    // 2. Reset teacher progress & XP (Keeps account, zeroes out scores)
+    window.resetTeacherProgress = async function(uid, name) {
+      if (!checkIsAdmin()) {
+        showToast("⚠️", "ไม่มีสิทธิ์ดำเนินการ", "เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถรีเซ็ตข้อมูลได้");
+        return;
+      }
+
+      if (!confirm(`คุณต้องการรีเซ็ตคะแนนและภารกิจทั้งหมดของ "${name}" ให้กลับเป็น 0 หรือไม่?\n\n(ข้อมูลชื่อ ตำแหน่ง และระดับชั้นจะยังคงอยู่ แต่ภารกิจและคะแนนสะสมจะถูกล้าง)`)) {
+        return;
+      }
+
+      try {
+        const isSelf = state.user && (state.user.uid === uid || state.user.email === name);
+        if (isSelf) {
+          state.completed = {};
+          state.quizSolved = {};
+          state.notes = {};
+          state.arcadeBonusXp = 0;
+          state.arcadeHighScore = 0;
+          state.arcadeMaxLevel = "ง่าย";
+          state.arcadePlays = 0;
+        }
+
+        const idx = state.allTeachers.findIndex(t => t.uid === uid);
+        const nowStr = new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น. (รีเซ็ต)";
+        if (idx >= 0) {
+          state.allTeachers[idx] = {
+            ...state.allTeachers[idx],
+            completed: {},
+            quizSolved: {},
+            notes: {},
+            arcadeBonusXp: 0,
+            arcadeHighScore: 0,
+            arcadeMaxLevel: "ง่าย",
+            arcadePlays: 0,
+            updatedAt: nowStr
+          };
+        }
+
+        if (state.firebaseConnected && firestoreDb) {
+          await firestoreDb.collection("klongkae_teachers").doc(uid).set({
+            completed: {},
+            quizSolved: {},
+            notes: {},
+            arcadeBonusXp: 0,
+            arcadeHighScore: 0,
+            arcadeMaxLevel: "ง่าย",
+            arcadePlays: 0,
+            updatedAt: nowStr
+          }, { merge: true });
+          state.dbWrites += 1;
+          const writesEl = document.getElementById("stat-writes");
+          if (writesEl) writesEl.innerText = state.dbWrites;
+        }
+
         saveState();
         renderStatsView();
         renderReportView();
+        renderCards();
+        renderUserManagementTable();
         playTone("click");
-        showToast("🗑️", "ลบข้อมูลสำเร็จ", `ลบข้อมูลของ ${name} เรียบร้อยแล้ว`);
+        showToast("🔄", "รีเซ็ตคะแนนสำเร็จ", `ล้างคะแนนและภารกิจของ ${name} เรียบร้อยแล้ว`);
       } catch (err) {
-        console.error("Error deleting doc:", err);
-        showToast("⚠️", "เกิดข้อผิดพลาดในการลบ", err.message || "ไม่สามารถลบข้อมูลได้");
+        console.error("Error resetting progress:", err);
+        showToast("⚠️", "เกิดข้อผิดพลาดในการรีเซ็ต", err.message || "ไม่สามารถรีเซ็ตได้");
       }
+    };
+
+    // 3. Toggle account status (Active / Suspended)
+    window.toggleSuspendUser = async function(uid, name, isCurrentlySuspended) {
+      if (!checkIsAdmin()) {
+        showToast("⚠️", "ไม่มีสิทธิ์ดำเนินการ", "เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถเปลี่ยนสถานะได้");
+        return;
+      }
+      if (state.user && (state.user.uid === uid || (state.user.email && state.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && uid === state.user.uid))) {
+        showToast("🛡️", "ระบบความปลอดภัย", "ไม่สามารถพักการใช้งานบัญชีของผู้ดูแลระบบหลักได้");
+        return;
+      }
+
+      const newStatus = isCurrentlySuspended ? "active" : "suspended";
+      const actionLabel = isCurrentlySuspended ? "ปลดการพักการใช้งาน" : "พักการใช้งาน";
+
+      if (!confirm(`คุณต้องการ "${actionLabel}" บัญชีของ "${name}" หรือไม่?`)) {
+        return;
+      }
+
+      try {
+        const idx = state.allTeachers.findIndex(t => t.uid === uid);
+        if (idx >= 0) {
+          state.allTeachers[idx].accountStatus = newStatus;
+        }
+
+        if (state.firebaseConnected && firestoreDb) {
+          await firestoreDb.collection("klongkae_teachers").doc(uid).set({
+            accountStatus: newStatus
+          }, { merge: true });
+          state.dbWrites += 1;
+          const writesEl = document.getElementById("stat-writes");
+          if (writesEl) writesEl.innerText = state.dbWrites;
+        }
+
+        saveState();
+        renderStatsView();
+        renderReportView();
+        renderUserManagementTable();
+        playTone("click");
+        showToast("⏸️", `${actionLabel}สำเร็จ`, `บัญชีของ ${name} มีสถานะเป็น ${newStatus === "active" ? "ใช้งานปกติ" : "พักการใช้งาน"}`);
+      } catch (err) {
+        console.error("Error toggling suspend status:", err);
+        showToast("⚠️", "เกิดข้อผิดพลาด", err.message || "ไม่สามารถดำเนินการได้");
+      }
+    };
+
+    // 4. Open User Management Modal
+    window.openUserManagementModal = function() {
+      if (!checkIsAdmin()) {
+        showToast("⚠️", "ไม่มีสิทธิ์เข้าถึง", "เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถเปิดระบบจัดการผู้ใช้ได้");
+        return;
+      }
+      const modal = document.getElementById("user-management-modal");
+      if (!modal) return;
+      modal.classList.remove("hidden");
+      renderUserManagementTable();
+      playTone("click");
+    };
+
+    window.closeUserManagementModal = function() {
+      const modal = document.getElementById("user-management-modal");
+      if (modal) modal.classList.add("hidden");
+    };
+
+    // 5. Render User Management Table & Metrics
+    window.renderUserManagementTable = function(searchTerm, statusFilter) {
+      const tbody = document.getElementById("user-mgmt-tbody");
+      if (!tbody) return;
+
+      if (typeof searchTerm === "string") currentMgmtSearch = searchTerm;
+      if (typeof statusFilter === "string") currentMgmtStatusFilter = statusFilter;
+
+      const teachers = [...state.allTeachers];
+
+      // Calculate Metrics
+      const totalCount = teachers.length;
+      const suspendedCount = teachers.filter(t => t.accountStatus === "suspended").length;
+      const activeCount = totalCount - suspendedCount;
+      const totalSystemXp = teachers.reduce((acc, t) => {
+        const missionsCount = Object.keys(t.completed || {}).filter(k => t.completed[k]).length;
+        const quizCount = Object.keys(t.quizSolved || {}).filter(k => t.quizSolved[k]).length;
+        const arcadeXp = t.arcadeBonusXp || 0;
+        return acc + (missionsCount * 100) + (quizCount * 50) + arcadeXp;
+      }, 0);
+
+      const elTotal = document.getElementById("mgmt-stat-total");
+      const elActive = document.getElementById("mgmt-stat-active");
+      const elSuspended = document.getElementById("mgmt-stat-suspended");
+      const elXp = document.getElementById("mgmt-stat-xp");
+
+      if (elTotal) elTotal.innerText = `${totalCount} คน`;
+      if (elActive) elActive.innerText = `${activeCount} คน`;
+      if (elSuspended) elSuspended.innerText = `${suspendedCount} คน`;
+      if (elXp) elXp.innerText = `${totalSystemXp.toLocaleString()} XP`;
+
+      // Filter teachers
+      let filtered = teachers;
+      if (currentMgmtStatusFilter === "active") {
+        filtered = filtered.filter(t => t.accountStatus !== "suspended");
+      } else if (currentMgmtStatusFilter === "suspended") {
+        filtered = filtered.filter(t => t.accountStatus === "suspended");
+      }
+
+      if (currentMgmtSearch.trim()) {
+        const q = currentMgmtSearch.trim().toLowerCase();
+        filtered = filtered.filter(t => 
+          (t.name || "").toLowerCase().includes(q) ||
+          (t.email || "").toLowerCase().includes(q) ||
+          (t.school || "").toLowerCase().includes(q) ||
+          (t.role || "").toLowerCase().includes(q)
+        );
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center text-slate-400">
+              <p class="text-sm">ไม่พบข้อมูลผู้ใช้ตามเงื่อนไขที่ค้นหา</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((t) => {
+        const isSelf = state.user && (state.user.uid === t.uid || state.user.email === t.email);
+        const isUserAdmin = (t.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        const isSuspended = t.accountStatus === "suspended";
+        const missionsDone = Object.keys(t.completed || {}).filter(k => t.completed[k]).length;
+        const quizDone = Object.keys(t.quizSolved || {}).filter(k => t.quizSolved[k]).length;
+        const userXp = (missionsDone * 100) + (quizDone * 50) + (t.arcadeBonusXp || 0);
+
+        const avatarThumb = t.photoURL ? `
+          <img src="${t.photoURL}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border border-indigo-200 shadow-2xs flex-shrink-0" referrerpolicy="no-referrer">
+        ` : `
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-sky-500 text-white font-bold flex items-center justify-center text-xs flex-shrink-0 shadow-2xs">
+            ${(t.name || "ครู").charAt(0)}
+          </div>
+        `;
+
+        const statusBadge = isSuspended ? `
+          <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
+            ⏸️ พักการใช้งาน
+          </span>
+        ` : `
+          <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
+            🟢 ใช้งานปกติ
+          </span>
+        `;
+
+        const escapedName = (t.name || "").replace(/'/g, "\\'");
+
+        return `
+          <tr class="hover:bg-slate-50 transition ${isSuspended ? 'bg-amber-50/30' : ''} ${isSelf ? 'bg-indigo-50/30' : ''}">
+            <td class="py-3 px-3">
+              <div class="flex items-center gap-2.5">
+                ${avatarThumb}
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold text-slate-800">${t.name}</span>
+                    ${isUserAdmin ? '<span class="text-[10px] bg-indigo-100 text-indigo-800 px-1.5 py-0.2 rounded font-bold">Admin</span>' : ''}
+                    ${isSelf ? '<span class="text-[10px] bg-sky-100 text-sky-800 px-1.5 py-0.2 rounded font-bold">คุณ</span>' : ''}
+                  </div>
+                  <p class="text-xs text-slate-500 truncate mt-0.5 font-mono">${t.email}</p>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-3 text-xs">
+              <div class="space-y-0.5">
+                <span class="inline-block bg-sky-50 text-sky-900 border border-sky-200 text-[10px] font-semibold px-2 py-0.2 rounded-md">
+                  ${formatTeacherRole(t)}
+                </span>
+                <p class="text-[11px] text-slate-500 truncate">${t.school || "โรงเรียนบ้านคลองแค"}</p>
+              </div>
+            </td>
+            <td class="py-3 px-3 text-center">
+              ${statusBadge}
+            </td>
+            <td class="py-3 px-3 text-center text-xs">
+              <span class="font-bold text-slate-700">${missionsDone}/10</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">ควิซ: ${quizDone} | เกม: ${t.arcadeHighScore || 0} แต้ม</span>
+            </td>
+            <td class="py-3 px-3 text-right font-extrabold text-teal-700">
+              ${userXp.toLocaleString()} XP
+            </td>
+            <td class="py-3 px-3 text-center whitespace-nowrap">
+              <div class="inline-flex items-center gap-1">
+                <button type="button" onclick="openProfileModal('${t.uid}')" class="bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="แก้ไขข้อมูลโพรไฟล์">
+                  <span>✏️</span><span>แก้</span>
+                </button>
+                <button type="button" onclick="resetTeacherProgress('${t.uid}', '${escapedName}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="รีเซ็ตคะแนนและภารกิจเป็น 0">
+                  <span>🔄</span><span>รีเซ็ต</span>
+                </button>
+                ${!isSelf && !isUserAdmin ? `
+                  <button type="button" onclick="toggleSuspendUser('${t.uid}', '${escapedName}', ${isSuspended})" class="${isSuspended ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200'} border text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="${isSuspended ? 'ปลดการพักการใช้งาน' : 'พักการใช้งานชั่วคราว'}">
+                    <span>${isSuspended ? '▶️' : '⏸️'}</span><span>${isSuspended ? 'ปลดพัก' : 'พัก'}</span>
+                  </button>
+                  <button type="button" onclick="deleteTeacherRecord('${t.uid}', '${escapedName}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="ลบบัญชีและสถิติถาวร">
+                    <span>🗑️</span><span>ลบ</span>
+                  </button>
+                ` : `
+                  <span class="text-[10px] text-slate-400 font-bold px-2 py-1 bg-slate-100 rounded-lg">🛡️ ผู้ดูแล</span>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
     };
 
     // Load saved progress safely
@@ -2158,13 +2572,20 @@
 
           const adminButtons = isAdmin ? `
             <td class="py-3 px-3 text-center whitespace-nowrap">
-              <div class="inline-flex items-center gap-1.5">
-                <button type="button" onclick="openProfileModal('${t.uid}')" class="bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="แก้ไขชื่อ/ตำแหน่ง">
+              <div class="inline-flex items-center gap-1">
+                <button type="button" onclick="openProfileModal('${t.uid}')" class="bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="แก้ไขข้อมูลโพรไฟล์">
                   <span>✏️</span><span>แก้</span>
                 </button>
-                <button type="button" onclick="deleteTeacherRecord('${t.uid}', '${(t.name || "").replace(/'/g, "\\'")}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="ลบข้อมูลของครูท่านนี้">
-                  <span>🗑️</span><span>ลบ</span>
+                <button type="button" onclick="resetTeacherProgress('${t.uid}', '${(t.name || "").replace(/'/g, "\\'")}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="รีเซ็ตคะแนนและภารกิจเป็น 0">
+                  <span>🔄</span><span>รีเซ็ต</span>
                 </button>
+                ${!isSelf ? `
+                  <button type="button" onclick="deleteTeacherRecord('${t.uid}', '${(t.name || "").replace(/'/g, "\\'")}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 shadow-2xs" title="ลบข้อมูลของครูท่านนี้">
+                    <span>🗑️</span><span>ลบ</span>
+                  </button>
+                ` : `
+                  <span class="text-[10px] text-slate-400 font-bold px-1.5 py-1 bg-slate-100 rounded-lg">🛡️ แอดมิน</span>
+                `}
               </div>
             </td>
           ` : "";
@@ -3849,6 +4270,86 @@
         playTone("click");
         showToast("🚪", "ออกจากระบบเรียบร้อย", "เปลี่ยนเป็นโหมดผู้เยี่ยมชมแล้ว");
       });
+
+      // User Management Modal handlers
+      const btnOpenUserMgmt = document.getElementById("btn-open-user-management");
+      if (btnOpenUserMgmt) {
+        btnOpenUserMgmt.addEventListener("click", () => {
+          openUserManagementModal();
+        });
+      }
+
+      const btnStatsUserMgmt = document.getElementById("btn-stats-user-mgmt");
+      if (btnStatsUserMgmt) {
+        btnStatsUserMgmt.addEventListener("click", () => {
+          openUserManagementModal();
+        });
+      }
+
+      const btnCloseUserMgmt = document.getElementById("btn-close-user-management");
+      if (btnCloseUserMgmt) {
+        btnCloseUserMgmt.addEventListener("click", closeUserManagementModal);
+      }
+
+      const btnCloseUserMgmtFooter = document.getElementById("btn-close-user-management-footer");
+      if (btnCloseUserMgmtFooter) {
+        btnCloseUserMgmtFooter.addEventListener("click", closeUserManagementModal);
+      }
+
+      const mgmtSearchInput = document.getElementById("mgmt-search-input");
+      if (mgmtSearchInput) {
+        mgmtSearchInput.addEventListener("input", (e) => {
+          renderUserManagementTable(e.target.value, null);
+        });
+      }
+
+      const btnFilterAll = document.getElementById("btn-mgmt-filter-all");
+      const btnFilterActive = document.getElementById("btn-mgmt-filter-active");
+      const btnFilterSuspended = document.getElementById("btn-mgmt-filter-suspended");
+
+      function updateMgmtFilterButtons(activeFilter) {
+        const btns = [
+          { el: btnFilterAll, name: "all" },
+          { el: btnFilterActive, name: "active" },
+          { el: btnFilterSuspended, name: "suspended" }
+        ];
+        btns.forEach(b => {
+          if (!b.el) return;
+          if (b.name === activeFilter) {
+            b.el.className = "px-2.5 py-1 rounded-lg font-bold bg-white text-indigo-700 shadow-2xs";
+          } else {
+            b.el.className = "px-2.5 py-1 rounded-lg font-semibold text-slate-600 hover:text-slate-900";
+          }
+        });
+      }
+
+      if (btnFilterAll) {
+        btnFilterAll.addEventListener("click", () => {
+          updateMgmtFilterButtons("all");
+          renderUserManagementTable(null, "all");
+        });
+      }
+      if (btnFilterActive) {
+        btnFilterActive.addEventListener("click", () => {
+          updateMgmtFilterButtons("active");
+          renderUserManagementTable(null, "active");
+        });
+      }
+      if (btnFilterSuspended) {
+        btnFilterSuspended.addEventListener("click", () => {
+          updateMgmtFilterButtons("suspended");
+          renderUserManagementTable(null, "suspended");
+        });
+      }
+
+      const btnMgmtRefresh = document.getElementById("btn-mgmt-refresh");
+      if (btnMgmtRefresh) {
+        btnMgmtRefresh.addEventListener("click", () => {
+          renderUserManagementTable();
+          playTone("click");
+          showToast("🔄", "รีเฟรชข้อมูลแล้ว", "อัปเดตรายชื่อและสถิติผู้ใช้ล่าสุด");
+        });
+      }
 
       // Firebase Config Modal handlers
       document.getElementById("btn-open-firebase-config").addEventListener("click", () => {
