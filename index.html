@@ -1345,6 +1345,19 @@
       return grades || role || "ครูผู้สอน";
     }
 
+    // Helper: Identify whether a user record is a participant teacher (Excludes Admin/Supervisor from student statistics)
+    function isParticipantTeacher(t) {
+      if (!t) return false;
+      const email = (t.email || "").trim().toLowerCase();
+      if (email === ADMIN_EMAIL.toLowerCase()) return false;
+      if (t.accountRole === "admin") return false;
+      return true;
+    }
+
+    function getParticipantTeachers() {
+      return state.allTeachers.filter(isParticipantTeacher);
+    }
+
     function formatTeacherSchool(t) {
       if (!t || !t.school) return "สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม";
       return t.school.trim();
@@ -1871,10 +1884,12 @@
       const currentRole = state.user ? state.user.role : "ครูผู้เข้าร่วมอบรม";
 
       const nowStr = new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น.";
+      const isCurrAdmin = (currentEmail || "").trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
       const entry = {
         uid: currentUid,
         name: currentName,
         email: currentEmail,
+        accountRole: isCurrAdmin ? "admin" : "teacher",
         photoURL: (state.user && state.user.photoURL) || "",
         grades: (state.user && Array.isArray(state.user.grades)) ? state.user.grades : [],
         role: currentRole,
@@ -2461,7 +2476,8 @@
     // SYSTEM 1: Render Statistics & Charts View
     function renderStatsView() {
       syncCurrentUserIntoTeachersList();
-      const teachers = state.allTeachers;
+      // Exclude Admin from statistics to maintain sample purity and zero error
+      const teachers = getParticipantTeachers();
       const totalTeachers = teachers.length;
 
       let totalMissionsDone = 0;
@@ -2526,7 +2542,11 @@
       // Update KPI Cards
       document.getElementById("kpi-total-teachers").innerText = `${totalTeachers} คน`;
       const activeCount = enrichedTeachers.filter(t => t.totalDone > 0).length;
-      document.getElementById("kpi-active-rate").innerText = `เริ่มพิชิตภารกิจแล้ว ${activeCount}/${totalTeachers} คน (${Math.round((activeCount / Math.max(1, totalTeachers)) * 100)}%)`;
+      if (totalTeachers === 0) {
+        document.getElementById("kpi-active-rate").innerText = "ยังไม่มีคุณครูเข้าร่วมอบรม (บัญชีแอดมินแยกต่างหาก)";
+      } else {
+        document.getElementById("kpi-active-rate").innerText = `เริ่มพิชิตภารกิจแล้ว ${activeCount}/${totalTeachers} คน (${Math.round((activeCount / totalTeachers) * 100)}%)`;
+      }
 
       document.getElementById("kpi-total-missions").innerText = `${totalMissionsDone} ภารกิจ`;
       document.getElementById("kpi-avg-missions").innerText = `เฉลี่ย ${(totalMissionsDone / Math.max(1, totalTeachers)).toFixed(1)} ภารกิจ / คน`;
@@ -2717,9 +2737,11 @@
       const repName = document.getElementById("report-user-name");
       const repEmail = document.getElementById("report-user-email");
 
+      const participantTeachers = getParticipantTeachers();
+
       if (isSchoolMode) {
         docTitle.innerText = "รายงานสรุปผลภาพรวมทั้งโรงเรียน: ภารกิจกู้ชีพครูไทยด้วย AI (10 Missions)";
-        repName.innerText = `ภาพรวมครูทั้งโรงเรียน (${state.allTeachers.length} คน)`;
+        repName.innerText = `ภาพรวมครูทั้งโรงเรียน (${participantTeachers.length} คน)`;
         repEmail.innerText = state.user ? state.user.email : "admin.klongkae@gmail.com";
       } else {
         docTitle.innerText = "รายงานผลการปฏิบัติงานรายบุคคล: ภารกิจกู้ชีพครูไทยด้วย AI";
@@ -2740,16 +2762,16 @@
         document.getElementById("rep-metric-shared").innerText = `${sharedDone}/1 ภารกิจ`;
         document.getElementById("rep-metric-afternoon").innerText = `${afternoonDone}/4 ภารกิจ`;
       } else {
-        const tCount = Math.max(1, state.allTeachers.length);
+        const tCount = Math.max(1, participantTeachers.length);
         let mSum = 0, sSum = 0, aSum = 0;
-        state.allTeachers.forEach(t => {
+        participantTeachers.forEach(t => {
           const comp = t.completed || {};
           mSum += cards.filter(c => c.group === "morning" && comp[c.id]).length;
           sSum += cards.filter(c => c.group === "shared" && comp[c.id]).length;
           aSum += cards.filter(c => c.group === "afternoon" && comp[c.id]).length;
         });
         const allSum = mSum + sSum + aSum;
-        const pct = Math.round((allSum / (tCount * 10)) * 100);
+        const pct = participantTeachers.length === 0 ? 0 : Math.round((allSum / (tCount * 10)) * 100);
         document.getElementById("rep-metric-percent").innerText = `เฉลี่ย ${pct}% (${allSum} งาน)`;
         document.getElementById("rep-metric-morning").innerText = `รวม ${mSum} ชิ้นงาน`;
         document.getElementById("rep-metric-shared").innerText = `รวม ${sSum} ชิ้นงาน`;
@@ -2780,11 +2802,11 @@
             </tr>
           `;
         } else {
-          const countWhoDid = state.allTeachers.filter(t => t.completed && t.completed[c.id]).length;
-          const sampleNotes = state.allTeachers
+          const countWhoDid = participantTeachers.filter(t => t.completed && t.completed[c.id]).length;
+          const sampleNotes = participantTeachers
             .map(t => t.notes && t.notes[c.id] ? `${t.name}: ${t.notes[c.id]}` : null)
             .filter(Boolean)
-            .join(" | ") || "บันทึกผลในระบบ Cloud เรียบร้อย";
+            .join(" | ") || (participantTeachers.length === 0 ? "ยังไม่มีข้อมูลคุณครูส่งงาน" : "บันทึกผลในระบบ Cloud เรียบร้อย");
           return `
             <tr>
               <td class="py-2.5 px-3 font-mono font-bold text-slate-700">#${c.id}</td>
@@ -2794,7 +2816,7 @@
               <td class="py-2.5 px-3 text-xs text-slate-700">${c.task}</td>
               <td class="py-2.5 px-3 text-xs text-slate-600">${sampleNotes}</td>
               <td class="py-2.5 px-3 text-center">
-                <span class="bg-sky-100 text-sky-800 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">พิชิต ${countWhoDid}/${state.allTeachers.length} คน</span>
+                <span class="bg-sky-100 text-sky-800 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">พิชิต ${countWhoDid}/${participantTeachers.length} คน</span>
               </td>
             </tr>
           `;
@@ -2805,7 +2827,7 @@
       if (!isSchoolMode) {
         const schLabel = (state.user && state.user.school) ? state.user.school : "สถานศึกษา/หน่วยงาน"; synthEl.innerText = `ผู้รายงานได้ประยุกต์ใช้ AI-Prompt ครูไทย ในการแก้ปัญหาหน้างานจริงตามบริบทของ ${schLabel} พิชิตภารกิจแล้วจำนวน ${totalDone} จาก 10 ภารกิจ (ช่วงเช้า ${morningDone} ข้อ, ช่วงสาย ${sharedDone} ข้อ, ช่วงบ่าย ${afternoonDone} ข้อ) สามารถนำชิ้นงานไปใช้ประกอบการนิเทศภายใน การประกันคุณภาพการศึกษา และจัดทำข้อตกลงในการพัฒนางาน (ว.PA) ได้อย่างเป็นรูปธรรม`;
       } else {
-        const schGroupLabel = (state.user && state.user.school) ? state.user.school : "สถานศึกษา/หน่วยงาน"; synthEl.innerText = `คณะครูและบุคลากรทางการศึกษา (${schGroupLabel}) จำนวน ${state.allTeachers.length} ท่าน ได้ร่วมกันขับเคลื่อนชุมชนแห่งการเรียนรู้ทางวิชาชีพ (PLC) โดยใช้เทคโนโลยี AI สร้างแผนการจัดการเรียนรู้เชิงรุก (Active Learning) สื่อสร้างสรรค์ใน Canva และระบบรายงานผลราชการครบทั้ง 3 ช่วงเวลา สอดคล้องกับมาตรฐานการประกันคุณภาพ และเกณฑ์ ว.PA`;
+        const schGroupLabel = (state.user && state.user.school) ? state.user.school : "สถานศึกษา/หน่วยงาน"; synthEl.innerText = `คณะครูและบุคลากรทางการศึกษา (${schGroupLabel}) จำนวน ${participantTeachers.length} ท่าน ได้ร่วมกันขับเคลื่อนชุมชนแห่งการเรียนรู้ทางวิชาชีพ (PLC) โดยใช้เทคโนโลยี AI สร้างแผนการจัดการเรียนรู้เชิงรุก (Active Learning) สื่อสร้างสรรค์ใน Canva และระบบรายงานผลราชการครบทั้ง 3 ช่วงเวลา สอดคล้องกับมาตรฐานการประกันคุณภาพ และเกณฑ์ ว.PA`;
       }
     }
 
@@ -2815,7 +2837,8 @@
       const rows = [
         ["รหัสผู้ใช้งาน", "ชื่อ-นามสกุล", "บัญชี Gmail", "ระดับชั้นที่สอน", "กลุ่มสาระ/ตำแหน่ง", "โรงเรียน/หน่วยงาน", "ช่วงเช้า (5 ข้อ)", "ช่วงสาย (1 ข้อ)", "ช่วงบ่าย (4 ข้อ)", "รวมภารกิจที่พิชิต", "คะแนน XP", "เวลาอัปเดตล่าสุด"]
       ];
-      state.allTeachers.forEach(t => {
+      const exportTeachers = getParticipantTeachers();
+      exportTeachers.forEach(t => {
         const comp = t.completed || {};
         const qz = t.quizSolved || {};
         const mDone = cards.filter(c => c.group === "morning" && comp[c.id]).length;
@@ -2862,7 +2885,7 @@
         school: "โรงเรียนบ้านคลองแค",
         exportedAt: new Date().toISOString(),
         currentUser: state.user,
-        teachersStatistics: state.allTeachers
+        teachersStatistics: getParticipantTeachers()
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -3842,7 +3865,7 @@
       const liveTbody = document.getElementById("arcade-live-leaderboard-tbody");
       if (!liveTbody) return;
 
-      const topList = ranked || [...state.allTeachers].sort((a, b) => (b.arcadeHighScore || 0) - (a.arcadeHighScore || 0));
+      const topList = ranked || [...getParticipantTeachers()].sort((a, b) => (b.arcadeHighScore || 0) - (a.arcadeHighScore || 0));
 
       if (topList.length === 0) {
         liveTbody.innerHTML = `
