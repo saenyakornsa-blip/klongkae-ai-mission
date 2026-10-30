@@ -1559,33 +1559,77 @@
         state.firebaseConnected = true;
 
         // Auto-restore Google Auth session and check Admin
-        firebaseAuth.onAuthStateChanged(u => {
+        firebaseAuth.onAuthStateChanged(async u => {
           if (u) {
-            const existing = state.allTeachers.find(t => t.uid === u.uid || (u.email && t.email === u.email));
-            const currentRole = (state.user && state.user.role && state.user.role !== "ครูผู้สอน โรงเรียนบ้านคลองแค") 
-              ? state.user.role 
-              : (existing && existing.role) || (state.user && state.user.role) || "ครูผู้สอน";
-            const currentGrades = (state.user && Array.isArray(state.user.grades) && state.user.grades.length > 0)
-              ? state.user.grades
-              : (existing && Array.isArray(existing.grades)) ? existing.grades : [];
-            const currentSchool = (state.user && state.user.school) || (existing && existing.school) || "โรงเรียนบ้านคลองแค";
-            const currentName = (state.user && state.user.name) || u.displayName || (existing && existing.name) || "คุณครู";
-            const currentPhoto = u.photoURL || (state.user && state.user.photoURL) || (existing && existing.photoURL) || "";
+            // Single Source of Truth: Fetch user document directly from Cloud Firestore first
+            let firestoreDoc = null;
+            try {
+              const docSnap = await firestoreDb.collection("klongkae_teachers").doc(u.uid).get();
+              if (docSnap.exists) {
+                firestoreDoc = docSnap.data();
+              }
+            } catch (err) {
+              console.warn("Could not fetch user document directly from Firestore:", err);
+            }
+
+            const existing = firestoreDoc || state.allTeachers.find(t => t.uid === u.uid || (u.email && t.email === u.email));
+
+            // Firestore is master: prefer existing cloud data over stale local cache
+            const finalName = (existing && existing.name) || u.displayName || (state.user && state.user.name) || "คุณครู";
+            const finalRole = (existing && existing.role) || (state.user && state.user.role) || "ครูผู้สอน";
+            const finalGrades = (existing && Array.isArray(existing.grades)) ? existing.grades : (state.user && Array.isArray(state.user.grades)) ? state.user.grades : [];
+            const finalSchool = (existing && existing.school) || (state.user && state.user.school) || "โรงเรียนบ้านคลองแค";
+            const finalPhoto = (existing && existing.photoURL) || u.photoURL || (state.user && state.user.photoURL) || "";
 
             state.user = {
               uid: u.uid,
-              name: currentName,
+              name: finalName,
               email: u.email || "",
-              photoURL: currentPhoto,
-              grades: currentGrades,
-              role: currentRole,
-              school: currentSchool
+              photoURL: finalPhoto,
+              grades: finalGrades,
+              role: finalRole,
+              school: finalSchool,
+              arcadeHighScore: (existing && existing.arcadeHighScore) || 0,
+              arcadeMaxLevel: (existing && existing.arcadeMaxLevel) || "ง่าย",
+              arcadePlays: (existing && existing.arcadePlays) || 0,
+              arcadeLastPlayed: (existing && existing.arcadeLastPlayed) || "-"
             };
-            saveState();
+
+            // Restore user mission progress from Firestore cleanly
+            if (existing) {
+              if (existing.completed) state.completed = { ...existing.completed };
+              if (existing.quizSolved) state.quizSolved = { ...existing.quizSolved };
+              if (existing.notes) state.notes = { ...existing.notes };
+              if (typeof existing.arcadeBonusXp === "number") state.arcadeBonusXp = existing.arcadeBonusXp;
+              if (typeof existing.arcadeHighScore === "number") state.arcadeHighScore = existing.arcadeHighScore;
+              if (existing.arcadeMaxLevel) state.arcadeMaxLevel = existing.arcadeMaxLevel;
+              if (typeof existing.arcadePlays === "number") state.arcadePlays = existing.arcadePlays;
+            }
+
+            // If brand new user in Firestore, write initial record; otherwise cache to localStorage
+            if (!firestoreDoc) {
+              saveState();
+            } else {
+              try {
+                localStorage.setItem("klongkae_mission_bright_v2", JSON.stringify({
+                  user: state.user,
+                  completed: state.completed,
+                  quizSolved: state.quizSolved,
+                  notes: state.notes,
+                  arcadeBonusXp: state.arcadeBonusXp,
+                  arcadeHighScore: state.arcadeHighScore,
+                  arcadeMaxLevel: state.arcadeMaxLevel,
+                  arcadePlays: state.arcadePlays,
+                  allTeachers: state.allTeachers
+                }));
+              } catch (e) {}
+            }
+
             updateAuthUi();
             syncCurrentUserIntoTeachersList();
             renderStatsView();
             renderReportView();
+            renderCards();
           } else {
             updateAdminUiVisibility();
           }
@@ -1598,7 +1642,7 @@
         dot.className = "w-2 h-2 rounded-full bg-emerald-500";
         txt.innerText = `เชื่อมต่อ Firebase Free Tier แล้ว (${cfg.projectId || "Cloud Firestore"})`;
 
-        // Listen to Firestore collection (limited to 50 docs to stay well inside Free Tier)
+        // Listen to Firestore collection in real-time (limited to 50 docs to stay inside Free Tier)
         firestoreDb.collection("klongkae_teachers").limit(50).onSnapshot(snapshot => {
           state.dbReads += 1;
           const readsEl = document.getElementById("stat-reads");
@@ -1606,12 +1650,35 @@
 
           const docs = [];
           snapshot.forEach(doc => docs.push(doc.data()));
-          // Production Data Purity: เมื่อเชื่อมต่อ Firestore แล้ว ให้แสดงเฉพาะข้อมูลจริงจาก Firestore
-          // ตัดข้อมูลตัวอย่าง defaultSchoolTeachers ออกทั้งหมด
           state.allTeachers = docs;
+
+          // Real-time synchronization: If current user is logged in, sync freshest profile from Cloud!
+          if (state.user) {
+            const myDoc = docs.find(d => d.uid === state.user.uid || (state.user.email && d.email === state.user.email));
+            if (myDoc) {
+              state.user.name = myDoc.name || state.user.name;
+              state.user.role = myDoc.role || state.user.role;
+              state.user.grades = Array.isArray(myDoc.grades) ? myDoc.grades : state.user.grades;
+              state.user.school = myDoc.school || state.user.school;
+              if (myDoc.photoURL) state.user.photoURL = myDoc.photoURL;
+              if (myDoc.completed) state.completed = { ...myDoc.completed };
+              if (myDoc.quizSolved) state.quizSolved = { ...myDoc.quizSolved };
+              if (myDoc.notes) state.notes = { ...myDoc.notes };
+              if (typeof myDoc.arcadeBonusXp === "number") state.arcadeBonusXp = myDoc.arcadeBonusXp;
+              if (typeof myDoc.arcadeHighScore === "number") state.arcadeHighScore = myDoc.arcadeHighScore;
+              if (myDoc.arcadeMaxLevel) state.arcadeMaxLevel = myDoc.arcadeMaxLevel;
+              if (typeof myDoc.arcadePlays === "number") state.arcadePlays = myDoc.arcadePlays;
+              state.user.arcadeHighScore = state.arcadeHighScore;
+              state.user.arcadeMaxLevel = state.arcadeMaxLevel;
+              state.user.arcadePlays = state.arcadePlays;
+              updateAuthUi();
+            }
+          }
+
           syncCurrentUserIntoTeachersList();
           renderStatsView();
           renderReportView();
+          renderCards();
         });
 
         if (notifyUser) {
@@ -3314,8 +3381,14 @@
                 <div class="flex items-center gap-2.5">
                   ${avatarThumbnail}
                   <div class="min-w-0">
-                    <p class="font-bold text-slate-800 truncate">${t.name} ${isSelf ? '<span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-bold">คุณ</span>' : ''}</p>
-                    <p class="text-xs text-slate-500 truncate">${t.email}${t.school ? ` • ${t.school}` : ""}</p>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="font-bold text-slate-800">${t.name}</span>
+                      ${isSelf ? '<span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded font-bold">คุณ</span>' : ''}
+                      <span class="inline-block bg-sky-50 text-sky-900 border border-sky-200 text-[10px] font-semibold px-2 py-0.2 rounded-md">
+                        ${formatTeacherRole(t)}
+                      </span>
+                    </div>
+                    <p class="text-xs text-slate-500 truncate mt-0.5">${t.email}${t.school ? ` • 🏫 ${t.school}` : ""}</p>
                   </div>
                 </div>
               </td>
@@ -3371,8 +3444,16 @@
           <tr class="hover:bg-sky-50/50 transition ${isSelf ? "bg-sky-50/40 font-bold" : ""}">
             <td class="py-2.5 px-3 font-bold text-center text-slate-700">${rankBadge}</td>
             <td class="py-2.5 px-3">
-              <span class="text-slate-800">${t.name}</span>
-              ${isSelf ? '<span class="text-[10px] bg-sky-100 text-sky-800 px-1.5 py-0.2 rounded ml-1 font-bold">คุณ</span>' : ''}
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-bold text-slate-800">${t.name}</span>
+                  ${isSelf ? '<span class="text-[10px] bg-sky-100 text-sky-800 px-1.5 py-0.2 rounded font-bold">คุณ</span>' : ''}
+                </div>
+                <div class="text-[11px] text-slate-500 truncate mt-0.5">
+                  <span class="text-sky-700 font-semibold">${formatTeacherRole(t)}</span>
+                  ${t.school ? ` • ${t.school}` : ""}
+                </div>
+              </div>
             </td>
             <td class="py-2.5 px-3 text-center">
               <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold border ${lvl.badgeClass}">
@@ -3452,14 +3533,27 @@
       let targetUser = state.user;
       const isAdmin = checkIsAdmin();
 
-      if (targetUid && isAdmin) {
-        const found = state.allTeachers.find(t => t.uid === targetUid);
-        if (found) targetUser = found;
+      if (targetUid) {
+        if (state.user && targetUid === state.user.uid) {
+          targetUser = state.user;
+        } else if (isAdmin) {
+          const found = state.allTeachers.find(t => t.uid === targetUid);
+          if (found) targetUser = found;
+        } else {
+          showToast("⚠️", "ไม่มีสิทธิ์แก้ไข", "คุณสามารถแก้ไขได้เฉพาะโพรไฟล์ของตนเองเท่านั้น");
+          return;
+        }
       }
 
       if (!targetUser) {
         document.getElementById("login-modal").classList.remove("hidden");
         return;
+      }
+
+      // Always merge with freshest record from state.allTeachers if present
+      const freshest = state.allTeachers.find(t => t.uid === targetUser.uid);
+      if (freshest) {
+        targetUser = { ...targetUser, ...freshest };
       }
 
       document.getElementById("profile-target-uid").value = targetUser.uid;
@@ -3542,7 +3636,7 @@
         const targetUid = document.getElementById("profile-target-uid").value;
         const newName = document.getElementById("profile-name-input").value.trim();
         const newRole = document.getElementById("profile-role-input").value.trim();
-        const newSchool = document.getElementById("profile-school-input").value.trim() || "โรงเรียนบ้านคลองแค";
+        const newSchool = document.getElementById("profile-school-input").value.trim() || "สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม";
 
         const checkedGrades = Array.from(document.querySelectorAll('input[name="profile-grade"]:checked'))
           .map(cb => cb.value);
@@ -3557,25 +3651,28 @@
           state.user.school = newSchool;
         }
 
-        // Update in state.allTeachers
+        const nowStr = new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น.";
+        const updatePayload = {
+          name: newName,
+          grades: checkedGrades,
+          role: newRole,
+          school: newSchool,
+          updatedAt: nowStr
+        };
+
+        // Update in state.allTeachers immediately
         const idx = state.allTeachers.findIndex(t => t.uid === targetUid);
         if (idx >= 0) {
-          state.allTeachers[idx].name = newName;
-          state.allTeachers[idx].grades = checkedGrades;
-          state.allTeachers[idx].role = newRole;
-          state.allTeachers[idx].school = newSchool;
+          state.allTeachers[idx] = {
+            ...state.allTeachers[idx],
+            ...updatePayload
+          };
         }
 
-        // Save to Firestore if connected
+        // Save directly to Firestore if connected
         if (state.firebaseConnected && firestoreDb) {
           try {
-            await firestoreDb.collection("klongkae_teachers").doc(targetUid).set({
-              name: newName,
-              grades: checkedGrades,
-              role: newRole,
-              school: newSchool,
-              updatedAt: new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) + " น."
-            }, { merge: true });
+            await firestoreDb.collection("klongkae_teachers").doc(targetUid).set(updatePayload, { merge: true });
             state.dbWrites += 1;
             const writesEl = document.getElementById("stat-writes");
             if (writesEl) writesEl.innerText = state.dbWrites;
@@ -3586,8 +3683,10 @@
 
         saveState();
         updateAuthUi();
+        syncCurrentUserIntoTeachersList();
         renderStatsView();
         renderReportView();
+        renderCards();
         closeProfileModal();
         playTone("success");
         showToast("✅", "อัปเดตโพรไฟล์สำเร็จ!", `บันทึกข้อมูล "${newName}" เรียบร้อยแล้ว`);
@@ -3616,34 +3715,77 @@
             const result = await firebaseAuth.signInWithPopup(provider);
             if (result && result.user) {
               const gUser = result.user;
-              const inputRole = document.getElementById("login-role-input").value.trim();
-              const existing = state.allTeachers.find(t => t.uid === gUser.uid || t.email === gUser.email);
-              const finalRole = inputRole || (existing && existing.role) || "ครูผู้สอน";
+
+              // Clear transient input fields to avoid contaminating new login
+              document.getElementById("login-role-input").value = "";
+              document.getElementById("login-name-input").value = "";
+              document.getElementById("login-email-input").value = "";
+
+              // Fetch document directly from Firestore first (Source of Truth)
+              let firestoreDoc = null;
+              try {
+                const snap = await firestoreDb.collection("klongkae_teachers").doc(gUser.uid).get();
+                if (snap.exists) firestoreDoc = snap.data();
+              } catch (e) {}
+
+              const existing = firestoreDoc || state.allTeachers.find(t => t.uid === gUser.uid || t.email === gUser.email);
+              const finalName = (existing && existing.name) || gUser.displayName || "คุณครู";
+              const finalRole = (existing && existing.role) || "ครูผู้สอน";
               const finalGrades = (existing && Array.isArray(existing.grades)) ? existing.grades : [];
-              const finalSchool = (existing && existing.school) || "โรงเรียนบ้านคลองแค";
+              const finalSchool = (existing && existing.school) || "สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม";
+              const finalPhoto = (existing && existing.photoURL) || gUser.photoURL || "";
 
               state.user = {
                 uid: gUser.uid,
-                name: gUser.displayName || (existing && existing.name) || "คุณครู",
+                name: finalName,
                 email: gUser.email || "",
-                photoURL: gUser.photoURL || "",
+                photoURL: finalPhoto,
                 grades: finalGrades,
                 role: finalRole,
-                school: finalSchool
+                school: finalSchool,
+                arcadeHighScore: (existing && existing.arcadeHighScore) || 0,
+                arcadeMaxLevel: (existing && existing.arcadeMaxLevel) || "ง่าย",
+                arcadePlays: (existing && existing.arcadePlays) || 0,
+                arcadeLastPlayed: (existing && existing.arcadeLastPlayed) || "-"
               };
+
+              // Restore existing user progress from Firestore cleanly
+              if (existing) {
+                state.completed = existing.completed ? { ...existing.completed } : {};
+                state.quizSolved = existing.quizSolved ? { ...existing.quizSolved } : {};
+                state.notes = existing.notes ? { ...existing.notes } : {};
+                state.arcadeBonusXp = typeof existing.arcadeBonusXp === "number" ? existing.arcadeBonusXp : 0;
+                state.arcadeHighScore = typeof existing.arcadeHighScore === "number" ? existing.arcadeHighScore : 0;
+                state.arcadeMaxLevel = existing.arcadeMaxLevel || "ง่าย";
+                state.arcadePlays = typeof existing.arcadePlays === "number" ? existing.arcadePlays : 0;
+              } else {
+                state.completed = {};
+                state.quizSolved = {};
+                state.notes = {};
+                state.arcadeBonusXp = 0;
+                state.arcadeHighScore = 0;
+                state.arcadeMaxLevel = "ง่าย";
+                state.arcadePlays = 0;
+              }
+
               saveState();
               updateAuthUi();
+              syncCurrentUserIntoTeachersList();
+              renderStatsView();
+              renderReportView();
               renderCards();
               loginModal.classList.add("hidden");
               playTone("success");
               showToast("🔑", "ล็อกอินด้วย Google สำเร็จ!", `ยินดีต้อนรับ ${state.user.name}`);
 
-              // If user hasn't specified a specific role or still default, open profile modal to prompt
-              if (!inputRole && (!existing || !existing.role || existing.role === "ครูผู้สอน โรงเรียนบ้านคลองแค")) {
-                setTimeout(() => {
-                  openProfileModal();
-                  showToast("📝", "กรุณาระบุระดับชั้น / ตำแหน่ง", "พิมพ์ระบุระดับชั้นและตำแหน่งของท่านเพื่อแสดงในตารางและใบรายงานผล");
-                }, 500);
+              // If user has default role and no grades, prompt profile modal
+              if (!existing || !existing.role || existing.role === "ครูผู้สอน โรงเรียนบ้านคลองแค" || existing.role === "ครูผู้สอน") {
+                if (finalGrades.length === 0) {
+                  setTimeout(() => {
+                    openProfileModal(state.user.uid);
+                    showToast("📝", "กรุณาระบุระดับชั้น / ตำแหน่ง", "ระบุระดับชั้นและตำแหน่งของท่านเพื่อแสดงในตารางและใบรายงานผล");
+                  }, 600);
+                }
               }
               return;
             }
@@ -3661,7 +3803,7 @@
         e.preventDefault();
         const name = document.getElementById("login-name-input").value.trim();
         const email = document.getElementById("login-email-input").value.trim().toLowerCase();
-        const role = document.getElementById("login-role-input").value.trim() || "ครูผู้สอน โรงเรียนบ้านคลองแค";
+        const role = document.getElementById("login-role-input").value.trim() || "ครูผู้สอน";
         if (!name || !email) return;
 
         state.user = {
@@ -3669,10 +3811,15 @@
           name: name,
           email: email,
           photoURL: "",
-          role: role
+          grades: [],
+          role: role,
+          school: "สถานศึกษา / หน่วยงานที่เข้าร่วมการอบรม"
         };
         saveState();
         updateAuthUi();
+        syncCurrentUserIntoTeachersList();
+        renderStatsView();
+        renderReportView();
         renderCards();
         loginModal.classList.add("hidden");
         playTone("success");
@@ -3686,9 +3833,19 @@
           try { firebaseAuth.signOut(); } catch (e) {}
         }
         state.user = null;
+        state.completed = {};
+        state.quizSolved = {};
+        state.notes = {};
+        state.arcadeBonusXp = 0;
+        state.arcadeHighScore = 0;
+        state.arcadeMaxLevel = "ง่าย";
+        state.arcadePlays = 0;
         saveState();
         updateAuthUi();
+        syncCurrentUserIntoTeachersList();
         renderCards();
+        renderStatsView();
+        renderReportView();
         playTone("click");
         showToast("🚪", "ออกจากระบบเรียบร้อย", "เปลี่ยนเป็นโหมดผู้เยี่ยมชมแล้ว");
       });
